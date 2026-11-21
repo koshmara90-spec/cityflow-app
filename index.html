@@ -51,7 +51,7 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 /* телефон: менюто остава горе под часовника, плочките са малки */
 /* когато „За плащане“ е под съдържанието (не отстрани), показва се само на Табло */
 @media(max-width:1280px){.app:not(.d) aside{display:none}}
-@media(max-width:900px){nav{position:sticky;top:0;z-index:30;background:var(--side);padding:calc(6px + env(safe-area-inset-top,0px)) 8px 6px;border-bottom:1px solid var(--bd);gap:2px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}nav button{padding:8px 11px;font-size:14px;gap:8px}nav i svg{width:19px;height:19px}}
+@media(max-width:900px){.app{align-content:start}nav{position:sticky;top:0;z-index:30;background:var(--side);padding:calc(6px + env(safe-area-inset-top,0px)) 8px 6px;border-bottom:1px solid var(--bd);gap:2px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}nav button{padding:8px 11px;font-size:14px;gap:8px}nav i svg{width:19px;height:19px}}
 @media(max-width:600px){.top{margin-bottom:12px;gap:8px}.top h1{font-size:22px}.tiles{grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 18px}.tile[data-a=new]{display:none}.rings{gap:10px;margin-bottom:16px}.rings svg{width:104px;height:104px}.tile{height:74px;gap:5px;font-size:12px;line-height:1.2;padding:8px 6px;border-radius:12px}.tile i svg{width:24px;height:24px;stroke-width:1.8}}
 .app.w{--ac:var(--wb);--oa:var(--wo)}.app.w aside{display:none}.app.w .top h1{color:var(--wb)}nav [data-v=wolt] i{color:var(--wb)}
 @media(min-width:1281px){.app.w{grid-template-columns:230px minmax(0,1fr)}}
