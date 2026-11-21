@@ -49,6 +49,8 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 @media(max-width:1280px){.app{grid-template-columns:200px minmax(0,1fr)}aside{grid-column:2;padding:0 30px 26px}}
 @media(max-width:900px){.app{grid-template-columns:1fr}nav{position:static;height:auto;flex-direction:row;overflow-x:auto;padding:8px;border:0}nav button{width:auto;white-space:nowrap;padding:9px 12px}.brand,.grow{display:none}main{padding:14px}aside{grid-column:1;padding:0 14px 20px}}
 /* телефон: менюто остава горе под часовника, плочките са малки */
+/* когато „За плащане“ е под съдържанието (не отстрани), показва се само на Табло */
+@media(max-width:1280px){.app:not(.d) aside{display:none}}
 @media(max-width:900px){nav{position:sticky;top:0;z-index:30;background:var(--side);padding:calc(6px + env(safe-area-inset-top,0px)) 8px 6px;border-bottom:1px solid var(--bd);gap:2px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}nav button{padding:8px 11px;font-size:14px;gap:8px}nav i svg{width:19px;height:19px}}
 @media(max-width:600px){.top{margin-bottom:12px;gap:8px}.top h1{font-size:22px}.tiles{grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 18px}.tile[data-a=new]{display:none}.rings{gap:10px;margin-bottom:16px}.rings svg{width:104px;height:104px}.tile{height:74px;gap:5px;font-size:12px;line-height:1.2;padding:8px 6px;border-radius:12px}.tile i svg{width:24px;height:24px;stroke-width:1.8}}
 .app.w{--ac:var(--wb);--oa:var(--wo)}.app.w aside{display:none}.app.w .top h1{color:var(--wb)}nav [data-v=wolt] i{color:var(--wb)}
@@ -65,7 +67,7 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 .lk *{pointer-events:none}.lk{display:inline-flex;align-items:center;gap:7px;text-align:left}
 .pc{border:1px solid var(--bd);border-radius:10px;padding:2px 14px;background:var(--bg)}.pr{display:grid;grid-template-columns:130px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--bd)}.pr:first-child{border-top:0}.pr small{color:var(--mu)}.pr a{color:var(--ac)}
 [hidden]{display:none!important}.ic{padding:2px 8px}
-</style></head><body><div class="app">
+</style></head><body><div class="app d">
 <nav><div class="brand">CityFlow LTD</div>
 <button data-v="dash" class="on"><i data-i="home"></i>Табло</button><button data-v="cour"><i data-i="bike"></i>Куриери</button><button data-v="inv"><i data-i="receipt"></i>Фактури и разходи</button><button data-v="hist"><i data-i="clock"></i>История</button><button data-v="week"><i data-i="chart"></i>Седмици</button><button data-v="wolt"><i data-i="bag"></i>WOLT</button><button data-v="set"><i data-i="sliders"></i>Настройки</button>
 <span class="grow"></span><div id="sync" style="padding:6px 14px;font-size:12px;color:var(--mu)">☁</div><button id="theme"></button></nav>
@@ -307,7 +309,7 @@ function dash(inc,exp,res,open,od){
   $('#b1').textContent=nc;$('#b1').hidden=!nc;$('#b2').textContent=ni;$('#b2').hidden=!ni;
   const rc=items.filter(paid).sort((a,b)=>cd(b).localeCompare(cd(a))).slice(0,6);
   $('#recent').innerHTML=rc.length?rc.map(i=>`<div class="row"><div class="m" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">✅ <b>${nm(i,esc(i.cat))}</b> <small>${bgd(cd(i)).slice(0,5)}${i.wend?' · Сед. '+wkNo(i.date):''}</small></div><b class="${isIn(i)?'in':'out'}">${isIn(i)?'+':'−'}${eur(i.amt)}</b></div>`).join(''):'<small>Още няма платени.</small>';alerts()}
-function go(v){view=v;document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='v-'+v);$('#vt').textContent=v==='dash'?hi():T[v];$('.app').classList.toggle('w',v==='wolt');document.documentElement.classList.toggle('w',v==='wolt');$('#nw').hidden=v==='wolt';$('#perw').hidden=!(v==='dash'||v==='cour');
+function go(v){view=v;document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='v-'+v);$('#vt').textContent=v==='dash'?hi():T[v];$('.app').classList.toggle('w',v==='wolt');$('.app').classList.toggle('d',v==='dash');document.documentElement.classList.toggle('w',v==='wolt');$('#nw').hidden=v==='wolt';$('#perw').hidden=!(v==='dash'||v==='cour');
   const sl=$('#s-'+v);if(sl)sl.appendChild($('#recs'));if(v==='set'){$('#sded').value=DED;$('#sme').value=wd0.me||''}tm=null;tp=0;render();scrollTo(0,0)}
 function openM(){$('#modal').hidden=false}function closeM(){$('#modal').hidden=true;$('#imodal').hidden=true;$('#smodal').hidden=true;$('#pmodal').hidden=true}
 function theme(t){document.documentElement.dataset.theme=t;ui.theme=t;saveUi();$('#theme').innerHTML=t==='dark'?'<i>'+ic('sun')+'</i>Светла тема':'<i>'+ic('moon')+'</i>Тъмна тема'}
