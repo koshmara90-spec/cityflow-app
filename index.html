@@ -48,6 +48,9 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 .mbox{position:relative;width:min(920px,100%);max-height:calc(92vh / var(--z,1));overflow:auto;border-radius:12px}.mbox .card{margin:0;padding-top:16px}#mx{position:absolute;top:12px;right:14px;width:auto}
 @media(max-width:1280px){.app{grid-template-columns:200px minmax(0,1fr)}aside{grid-column:2;padding:0 30px 26px}}
 @media(max-width:900px){.app{grid-template-columns:1fr}nav{position:static;height:auto;flex-direction:row;overflow-x:auto;padding:8px;border:0}nav button{width:auto;white-space:nowrap;padding:9px 12px}.brand,.grow{display:none}main{padding:14px}aside{grid-column:1;padding:0 14px 20px}}
+/* телефон: менюто остава горе под часовника, плочките са малки */
+@media(max-width:900px){nav{position:sticky;top:0;z-index:30;background:var(--side);padding:calc(6px + env(safe-area-inset-top,0px)) 8px 6px;border-bottom:1px solid var(--bd);gap:2px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}nav button{padding:8px 11px;font-size:14px;gap:8px}nav i svg{width:19px;height:19px}}
+@media(max-width:600px){.top{margin-bottom:12px;gap:8px}.top h1{font-size:22px}.tiles{grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 18px}.tile[data-a=new]{display:none}.rings{gap:10px;margin-bottom:16px}.rings svg{width:104px;height:104px}.tile{height:74px;gap:5px;font-size:12px;line-height:1.2;padding:8px 6px;border-radius:12px}.tile i svg{width:24px;height:24px;stroke-width:1.8}}
 .app.w{--ac:var(--wb);--oa:var(--wo)}.app.w aside{display:none}.app.w .top h1{color:var(--wb)}nav [data-v=wolt] i{color:var(--wb)}
 @media(min-width:1281px){.app.w{grid-template-columns:230px minmax(0,1fr)}}
 :root.w:not([data-theme="dark"]){--bg:#dbeefb;--side:#c8e3f7;--card:#f2f9ff;--bd:#b7d5ec;--tx:#0c2a47;--mu:#56748f;--wb:#0a78b8}
@@ -75,7 +78,7 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 <button class="tile" data-a="binv"><i data-i="doc"></i>Фактура от Болт</button>
 <button class="tile" data-a="inv"><i data-i="receipt"></i>Фактури и разходи<span class="bd" id="b2" hidden></span></button></div>
 <div class="card" id="alerts" hidden></div>
-<h2 class="sec">Баланс <small id="pl"></small></h2><div class="rings" id="rings"></div><div class="g2"><div class="card"><h2>Приходи и разходи по месеци</h2><div id="mon"></div></div><div class="card"><h2>Разходи по вид</h2><div id="cats"></div></div></div></section>
+<h2 class="sec">Салдо <small id="pl"></small></h2><div class="rings" id="rings"></div><div class="g2"><div class="card"><h2>Приходи и разходи по месеци</h2><div id="mon"></div></div><div class="card"><h2>Разходи по вид</h2><div id="cats"></div></div></div></section>
 <section class="view" id="v-cour" hidden><div class="card"><h2>Колко е получил всеки куриер <small id="crp"></small></h2><div class="ov" id="crt"></div></div><div id="s-cour"></div></section>
 <section class="view" id="v-inv" hidden><div id="s-inv"></div></section>
 <section class="view" id="v-hist" hidden><div id="s-hist"><div class="card" id="recs"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="margin:0">Записи</h2>
