@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="bg" data-theme="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CityFlow LTD</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="CityFlow"><meta name="theme-color" content="#121214">
+<style>
+:root{--bg:#f3f4f6;--side:#fff;--card:#fff;--tx:#1b1c1f;--mu:#6e7079;--bd:#e4e5e9;--ac:#1f8a70;--oa:#fff;--in:#1f9d63;--out:#d4573b;--wr:#c28a1c;--wb:#009DE0;--wo:#fff;color-scheme:light}
+:root[data-theme="dark"]{--bg:#121214;--side:#18181b;--card:#222226;--tx:#ececee;--mu:#9a9aa3;--bd:#323238;--ac:#3fc3a0;--oa:#052019;--in:#4fcf8c;--out:#ef7f63;--wr:#e6b24d;--wb:#3bb9f5;--wo:#031b29;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+
+h1{font-size:19px;margin:0;font-weight:600}h2{font-size:14px;margin:0 0 10px;font-weight:600}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px}
+.k{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:12px}
+.k div{padding:2px 4px}.k small{color:var(--mu);display:block;font-size:12px}.k b{font-size:20px;font-weight:600}
+.in{color:var(--in)}.out{color:var(--out)}.wr{color:var(--wr)}
+label{display:block;font-size:12px;color:var(--mu);margin-bottom:2px}
+input,select,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:7px;padding:7px 9px;width:100%}
+input[type=checkbox]{width:auto;accent-color:var(--ac);transform:scale(1.2)}
+button{cursor:pointer;width:auto}button.p{background:var(--ac);color:var(--oa);border-color:var(--ac);padding:8px 18px}
+.f{display:grid;gap:8px 10px;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));align-items:end}
+.row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--bd)}.row:first-of-type{border-top:0}
+.row .m{flex:1;min-width:0}small{color:var(--mu)}
+.tag{font-size:11px;padding:1px 7px;border-radius:9px;border:1px solid currentColor;white-space:nowrap}
+.ov{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:780px}th,td{white-space:nowrap;text-align:left;padding:7px 6px;border-top:1px solid var(--bd);font-size:14px}th{color:var(--mu);font-weight:500;font-size:12px;border:0}
+.bars{display:flex;align-items:flex-end;gap:10px}.bc{flex:1;text-align:center;font-size:11px;color:var(--mu)}
+.pair{display:flex;gap:3px;align-items:flex-end;height:110px;justify-content:center}.pair i{width:35%;min-height:2px;border-radius:3px 3px 0 0}
+.hb{display:grid;grid-template-columns:120px 1fr 80px;gap:8px;align-items:center;font-size:13px;margin:6px 0}.hb i{display:block;height:10px;border-radius:5px;background:var(--out)}
+.g2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}.g2 .card{margin:0}
+#warn{border-color:var(--wr);color:var(--wr);font-size:13px}#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--tx);color:var(--bg);padding:8px 14px;border-radius:8px}
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}.tabs button{border:0;background:none;color:var(--mu);padding:5px 10px;font-weight:600}.tabs button.on{background:var(--bg);color:var(--tx)}button:disabled{opacity:.35;cursor:default}
+.app{display:grid;grid-template-columns:230px minmax(0,1fr) 390px;min-height:calc(100vh / var(--z,1))}
+nav{background:var(--side);border-right:1px solid var(--bd);padding:16px 12px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:calc(100vh / var(--z,1))}
+nav button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:none;padding:12px 14px;border-radius:10px;font-size:15px}
+nav button.on{background:var(--card);font-weight:600}nav button i{display:grid;place-items:center;color:var(--mu)}nav button.on i{color:var(--ac)}nav i svg{width:22px;height:22px}.brand{font-size:18px;font-weight:700;padding:6px 14px 16px}.grow{flex:1}
+main{padding:26px 30px;min-width:0}aside{padding:26px 22px 26px 0;min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}.top h1{font-size:30px;font-weight:500}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:6px 0 26px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:auto;height:132px;background:var(--card);border-radius:14px;font-size:14px;text-align:center;padding:10px}
+.tile i{display:grid;place-items:center;color:var(--ac)}.tile i svg{width:46px;height:46px;stroke-width:1.5}.tile:hover,nav button:hover{border-color:var(--ac)}
+.bd{position:absolute;top:-9px;right:-9px;background:#5b7fe0;color:#fff;border-radius:12px;min-width:25px;height:25px;display:grid;place-items:center;font-size:12px;padding:0 6px}
+h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--mu);font-size:13px}
+.rings{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px;margin-bottom:22px}
+.rc{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px}
+.lg{flex:1}.lg div{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:14px}.lg div:last-child{border:0}.lg u{text-decoration:none}
+.modal{position:fixed;inset:0;background:#000a;display:grid;place-items:center;padding:16px;z-index:20}
+.mbox{position:relative;width:min(920px,100%);max-height:calc(92vh / var(--z,1));overflow:auto;border-radius:12px}.mbox .card{margin:0;padding-top:16px}#mx{position:absolute;top:12px;right:14px;width:auto}
+@media(max-width:1280px){.app{grid-template-columns:200px minmax(0,1fr)}aside{grid-column:2;padding:0 30px 26px}}
+@media(max-width:900px){.app{grid-template-columns:1fr}nav{position:static;height:auto;flex-direction:row;overflow-x:auto;padding:8px;border:0}nav button{width:auto;white-space:nowrap;padding:9px 12px}.brand,.grow{display:none}main{padding:14px}aside{grid-column:1;padding:0 14px 20px}}
+.app.w{--ac:var(--wb);--oa:var(--wo)}.app.w aside{display:none}.app.w .top h1{color:var(--wb)}nav [data-v=wolt] i{color:var(--wb)}
+@media(min-width:1281px){.app.w{grid-template-columns:230px minmax(0,1fr)}}
+:root.w:not([data-theme="dark"]){--bg:#dbeefb;--side:#c8e3f7;--card:#f2f9ff;--bd:#b7d5ec;--tx:#0c2a47;--mu:#56748f;--wb:#0a78b8}
+:root[data-theme="dark"].w{--bg:#0a1a33;--side:#081426;--card:#102a4f;--bd:#1f4275;--tx:#eaf3ff;--mu:#8ea9cc}
+.calw{position:fixed;inset:0;background:#0008;display:grid;place-items:center;z-index:40}.calb{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;width:min(320px,92vw)}
+.calh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.calh button{width:36px}.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}.calg span{color:var(--mu);font-size:12px;padding:6px 0}
+.calg button{width:auto;padding:8px 0;border:0;background:none;border-radius:8px}.calg button:hover{background:var(--bg)}.calg button.o{color:var(--mu);opacity:.55}.calg button.t{outline:1px solid var(--ac)}.calg button.s{background:var(--ac);color:var(--oa);opacity:1}.calf{display:flex;justify-content:space-between;margin-top:10px}
+.dt td{background:var(--bg);white-space:normal;padding:12px 14px 14px 46px}.dg{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:flex-end;max-width:660px}.dg>div{min-width:96px}.dg small{display:block;color:var(--mu);font-size:12px}.dg b{font-size:15px}.dg .tt{padding-left:18px;border-left:1px solid var(--bd)}
+.lk{background:none;border:0;padding:0;color:var(--ac);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.av{display:inline-grid;place-items:center;border-radius:50%;background:var(--ac);color:var(--oa);font-weight:700;object-fit:cover;vertical-align:middle;flex:none;overflow:hidden;text-decoration:none}
+.row .lk,#tbl .lk{text-decoration:none;color:inherit}.row .lk:hover,#tbl .lk:hover{color:var(--ac)}
+.lk *{pointer-events:none}.lk{display:inline-flex;align-items:center;gap:7px;text-align:left}
+.pc{border:1px solid var(--bd);border-radius:10px;padding:2px 14px;background:var(--bg)}.pr{display:grid;grid-template-columns:130px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--bd)}.pr:first-child{border-top:0}.pr small{color:var(--mu)}.pr a{color:var(--ac)}
+[hidden]{display:none!important}.ic{padding:2px 8px}
+</style></head><body><div class="app">
+<nav><div class="brand">CityFlow LTD</div>
+<button data-v="dash" class="on"><i data-i="home"></i>Табло</button><button data-v="cour"><i data-i="bike"></i>Куриери</button><button data-v="inv"><i data-i="receipt"></i>Фактури и разходи</button><button data-v="hist"><i data-i="clock"></i>История</button><button data-v="week"><i data-i="chart"></i>Седмици</button><button data-v="wolt"><i data-i="bag"></i>WOLT</button><button data-v="set"><i data-i="sliders"></i>Настройки</button>
+<span class="grow"></span><div id="sync" style="padding:6px 14px;font-size:12px;color:var(--mu)">☁</div><button id="theme"></button></nav>
+<main><div class="top"><h1 id="vt">Здравей</h1><div style="display:flex;gap:8px;align-items:center"><span id="perw"><select id="per" style="width:auto" aria-label="Период"></select></span><button class="p" data-a="new" id="nw">＋ Нов запис</button></div></div>
+<div id="warn" class="card" hidden></div>
+<section class="view" id="v-dash"><div class="tiles">
+<button class="tile" data-a="new"><i data-i="plus"></i>Нов запис</button>
+<button class="tile" data-a="week"><i data-i="bike"></i>Куриери за седмицата<span class="bd" id="b1" hidden></span></button>
+<button class="tile" data-a="imp"><i data-i="down"></i>Импорт от Болт</button>
+<button class="tile" data-a="binv"><i data-i="doc"></i>Фактура от Болт</button>
+<button class="tile" data-a="inv"><i data-i="receipt"></i>Фактури и разходи<span class="bd" id="b2" hidden></span></button></div>
+<div class="card" id="alerts" hidden></div>
+<h2 class="sec">Баланс <small id="pl"></small></h2><div class="rings" id="rings"></div><div class="g2"><div class="card"><h2>Приходи и разходи по месеци</h2><div id="mon"></div></div><div class="card"><h2>Разходи по вид</h2><div id="cats"></div></div></div></section>
+<section class="view" id="v-cour" hidden><div class="card"><h2>Колко е получил всеки куриер <small id="crp"></small></h2><div class="ov" id="crt"></div></div><div id="s-cour"></div></section>
+<section class="view" id="v-inv" hidden><div id="s-inv"></div></section>
+<section class="view" id="v-hist" hidden><div id="s-hist"><div class="card" id="recs"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="margin:0">Записи</h2>
+<span style="display:flex;gap:6px"><select id="tm" style="width:auto"></select><select id="flt" style="width:auto"><option value="all">Всички</option><option value="paid">Платени</option><option value="open">Неплатени</option></select></span></div><div class="ov" id="tbl"></div><div id="pg" style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px"></div></div></div></section>
+<section class="view" id="v-week" hidden><div class="card"><h2>Седмичен резултат</h2><div class="ov" id="wkt"></div><p style="margin:12px 0 0"><small>Резултат = фактура от Болт (с ДДС) − куриери (за плащане) − други разходи. „Сравнение“ сверява сумата без ДДС от фактурата със заработките на куриерите (без ДДС).</small></p></div></section>
+<section class="view" id="v-wolt" hidden><p style="color:var(--mu);margin:0 0 14px">Лични сметки за Wolt. Всичко тук е отделно и не влияе на останалите раздели.</p>
+<div class="card"><h2 id="wft">Нов запис</h2><div class="f">
+<div><label>Дата</label><input id="wd" type="date"></div><div><label>Описание</label><input id="wn" placeholder="напр. седмица 45"></div>
+<div><label>Бруто (€)</label><input id="wg" type="number" step="0.01" min="0" inputmode="decimal"></div><div><label>Бакшиш (€, вкл. в бруто)</label><input id="wt" type="number" step="0.01" min="0" inputmode="decimal"></div>
+<div><label>Удръжка (%)</label><input id="wp" type="number" step="0.01" min="0" inputmode="decimal"></div>
+<div><label>Удръжка (€)</label><input id="wf" type="number" step="0.01" min="0" inputmode="decimal"></div>
+<div id="wexpW"><label>Очаквано на</label><input id="we" type="date"></div>
+<div><label><input type="checkbox" id="wr"> Получено</label><input id="wrd" type="date" hidden></div>
+<div style="display:flex;gap:8px"><button class="p" id="wsave">Запази</button><button id="wcancel" hidden>Отказ</button></div></div>
+<div id="wprev" style="margin-top:12px"></div></div>
+<div class="card" style="padding:10px 14px"><div class="f"><div><label>От дата</label><input id="wf1"></div><div><label>До дата</label><input id="wf2"></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button data-wr="w">Тази седмица</button><button data-wr="m">Този месец</button><button data-wr="a">Всичко</button></div></div></div>
+<div class="rings" id="wsum"></div>
+<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Записи</h2><button id="wcsv">CSV</button></div><div class="ov" id="wtbl"></div></div></section>
+<section class="view" id="v-set" hidden><div class="card"><h2>Данни и резервни копия</h2><p><small>Данните се пазят в твоята Google Таблица, а копие стои и на това устройство, затова работи и без интернет. Промените се изпращат, щом има връзка. „Импорт на копие“ добавя записи от резервно копие (JSON) от старата версия, без да трие нищо.</small></p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="p" id="bk">Резервно копие</button><button id="rk">Смени ключа</button><button id="rs">Импорт на копие</button><button id="csv">Изтегли CSV</button><input type="file" id="rf" accept=".json,application/json" hidden></div></div>
+<div class="card"><h2>Име</h2><label>Как да те поздравява таблото</label><input id="sme" maxlength="30" autocomplete="off" style="max-width:220px" placeholder="Твоето име"></div>
+<div class="card"><h2>Удръжка</h2><label>Стандартна удръжка на куриер за седмица (€)</label><input id="sded" type="number" step="0.01" min="0" style="max-width:160px"></div>
+<div class="card"><h2>Размер на интерфейса</h2><small>Ако текстът е дребен или не е достатъчно ясен на твоя екран, увеличи го. Така всичко се прерисува по-гладко.</small><br><select id="zm" style="width:auto;margin-top:8px"><option value="0.9">90%</option><option value="1">100%</option><option value="1.1">110%</option><option value="1.25">125%</option><option value="1.5">150%</option><option value="1.75">175%</option></select></div></section></main>
+<aside><div class="card"><h2>⏳ За плащане</h2><div id="pend"></div></div><div class="card"><h2>✅ Последно платени</h2><div id="recent"></div></div></aside><div class="calw" id="cal" hidden><div class="calb"><div class="calh"><button data-c="-1" aria-label="Предишен месец">‹</button><b id="calt"></b><button data-c="1" aria-label="Следващ месец">›</button></div><div class="calg" id="calg"></div><div class="calf"><button data-c="today">Днес</button><button data-c="clear">Изчисти</button></div></div></div></div>
+<div class="modal" id="modal" hidden><div class="mbox"><div class="card"><div class="tabs"><button id="ft" class="on">Нов запис</button><button id="t2">Куриери за седмицата</button></div><div class="f" id="single">
+<div><label>Какво е</label><select id="cat"></select></div>
+<div><label id="lp">Име на куриера</label><input id="party" list="pl"><datalist id="pl"></datalist></div>
+<div><label id="la">Сума (€)</label><input id="amt" type="number" step="0.01" min="0" inputmode="decimal"></div><div id="dedW"><label>Удръжка (€)</label><input id="ded" type="number" step="0.01" min="0" inputmode="decimal"></div>
+<div id="weekW"><label>За коя седмица (пон–нед)</label><select id="week"></select></div>
+<div id="dateW"><label>Дата на фактурата</label><input id="date" type="date"></div>
+<div id="dueW"><label>Платете на</label><input id="due" type="date"></div>
+<div id="recW"><label>Получено на</label><input id="rdate" type="date"></div>
+<div id="paidW"><label><input type="checkbox" id="paid"> Вече платено</label><input id="pdate" type="date" hidden></div>
+<div><label>Бележка</label><input id="note"></div>
+<div style="display:flex;gap:8px"><button class="p" id="save">Запази</button><button id="cancel" hidden>Отказ</button></div>
+</div>
+<div id="batch" hidden><div class="f" style="margin-bottom:6px"><div><label>За коя седмица</label><select id="bweek"></select></div><div><label>Платете на</label><input id="bdue" type="date"></div><div><label>Удръжка на куриер (€)</label><input id="bded" type="number" step="0.01" min="0"></div><div><label>Нов куриер</label><div style="display:flex;gap:6px"><input id="bnew" placeholder="Име"><button id="badd">+</button></div></div></div><div id="blist"></div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="p" id="bsave">Запиши за седмицата</button><button id="bfill">Попълни последните суми</button><button id="bimp">Импорт от справка на Болт (CSV)</button><input type="file" id="bcsv" accept=".csv,text/csv" hidden></div></div></div><button id="mx" class="ic" aria-label="Затвори">✕</button></div></div>
+<div class="modal" id="imodal" hidden><div class="mbox"><div class="card"><h2>Фактура от Болт</h2><div id="ibody"></div></div><button id="imx" class="ic" aria-label="Затвори" style="position:absolute;top:12px;right:14px;width:auto">✕</button></div></div>
+<input type="file" id="ipdf" accept=".pdf,application/pdf" hidden>
+<input type="file" id="pfile" accept="image/*" hidden>
+<div class="modal" id="smodal" hidden><div class="mbox"><div class="card"><h2>Разплащателна бележка</h2><canvas id="scv" style="width:100%;max-width:460px;border-radius:8px;border:1px solid var(--bd)"></canvas><div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="p" id="spng">Свали като снимка (PNG)</button><button id="spdf">Свали като PDF</button></div></div><button class="ic" data-cl="1" aria-label="Затвори" style="position:absolute;top:12px;right:14px;width:auto">✕</button></div></div>
+<div class="modal" id="pmodal" hidden><div class="mbox"><div class="card"><div id="pbody"></div></div><button class="ic" data-cl="1" aria-label="Затвори" style="position:absolute;top:12px;right:14px;width:auto">✕</button></div></div>
+<div id="toast" hidden></div>
+<div id="loading" style="position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);color:var(--mu);z-index:100;text-align:center;padding:20px">Зареждане…</div>
+<script>
+const $=s=>document.querySelector(s),eur=n=>new Intl.NumberFormat('bg-BG',{style:'currency',currency:'EUR'}).format(n||0);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const bgd=d=>d?d.split('-').reverse().join('.'):'—';
+const INC='Болт',CATS=['Куриер','Счетоводна фактура','Адвокат','Куриерска услуга','Друго',INC];
+let db=null,uid=null,items=[],editId=null,per='all',tm=null,tp=0,couriers=[],DED=30,prof={};const PS=15,KEY='otchetnost.v1';let noStore=false;const d2=v=>v==null||v===''?'':String(v).replace('.',',');
+const cashAll=()=>items.reduce((a,i)=>a+(isIn(i)?i.amt:i.paid?-i.amt:0),0);
+const xo=new Set();
+const xd=i=>{if(i.gross==null)return '';const v=k=>`<div><small>${k[1]}</small><b>${eur(k[0]||0)}</b></div>`,sum=(i.earn||0)+(i.wait||0)+(i.bonus||0)+(i.tip||0)+(i.adj||0)+(i.dep||0),oth=Math.round((i.gross-sum)*100)/100;
+  const info=i.earn==null?'<small style="flex:1 1 100%">Няма подробна разбивка за този запис. Импортирай справката на Болт за тази седмица, за да се попълни.</small>':[[i.earn,'Основна заработка'],[i.wait,'Чакане'],[i.bonus,'Бонус'],[i.tip,'Бакшиш'],[i.adj,'Корекции']].map(v).join('')+(i.dep?v([i.dep,'Депозити']):'')+(Math.abs(oth)>0.005?v([oth,'Други']):'');
+  const bl=(i.b1||i.od)?`<div class="tt"><small>Салдо</small><b class="wr">${eur(Math.abs(i.b1||0))}</b><small>${i.b1<0?'дължи на Болт':i.b1>0?'в полза на куриера':''}</small></div>${i.od?`<div><small>Просрочен дълг</small><b class="wr">${eur(i.od)}</b></div>`:''}`:'';
+  return `<tr class="dt"><td colspan="9"><div class="dg">${info}<div class="tt"><small>Заработка общо</small><b>${eur(i.gross)}</b></div><div><small>Удръжка</small><b>−${eur(i.ded||0)}</b></div><div class="tt"><small>За плащане</small><b style="color:var(--ac)">${eur(i.amt)}</b></div>${bl}<div style="flex:1 1 100%"><button data-slip="${i.id}">Бележка за куриера (PNG / PDF)</button></div></div></td></tr>`};
+const cd=i=>paid(i)?(i.pdate||i.date):(i.due||i.date);
+const xc=i=>i.gross==null?'<td></td><td></td>':`<td>${eur(i.gross)}</td><td>${eur(i.ded)}</td>`;
+const norm=a=>Array.isArray(a)?a.filter(i=>i&&typeof i.date==='string'&&i.date.length>=10&&isFinite(i.amt)).map((i,k)=>({...i,cat:i.cat==='Приход от Болт'?'Болт':i.cat,id:i.id||Date.now().toString(36)+k,amt:+i.amt,type:i.type==='in'?'in':'out',paid:!!i.paid})):null;
+let ui={},uiReady=false,snap={items:{},wolt:{},pf:{},st:''},rev=0,busy=false,dirty=false,retry=null;
+const js=o=>JSON.stringify(o),API='https://script.google.com/macros/s/AKfycby4pRymJXVAPh9GTYfWEdSvPTtw6XzLCWIwuNFQeiLxQ5CBayuFpeMqBsTKde_GmURo/exec',KK='cityflow.key',CK='cityflow.cache';
+const apiKey=()=>{try{return localStorage.getItem(KK)||''}catch(e){return ''}};
+function run(){let ok=()=>{},bad=()=>{};const o={withSuccessHandler(f){ok=f;return o},withFailureHandler(f){bad=f;return o}};
+  ['load','getRev','applyOps','setUi'].forEach(fn=>o[fn]=(...args)=>{fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:js({key:apiKey(),fn,args})})
+    .then(r=>r.json()).then(r=>{if(r.ok)ok(r.data);else{if(r.error==='Грешен ключ'){try{localStorage.removeItem(KK)}catch(x){}askKey('Ключът не е верен. Опитай пак.')}bad(new Error(r.error))}}).catch(e=>bad(e))});return o}
+function cache(){try{localStorage.setItem(CK,js({items,wolt,couriers,DED,wd0,prof,snap,rev,ui}))}catch(e){}}
+function fromCache(){try{const c=JSON.parse(localStorage.getItem(CK)||'null');if(!c||!c.snap)return false;items=norm(c.items)||[];wolt=normW(c.wolt);couriers=c.couriers||[];DED=c.DED??30;wd0=c.wd0||{p:0,f:0};prof=c.prof||{};snap=c.snap;rev=c.rev||0;ui=c.ui||{};return true}catch(e){return false}}
+function askKey(msg){const l=$('#loading');l.hidden=false;l.innerHTML='<div style="max-width:340px;width:100%"><h2>CityFlow LTD</h2><p><small>'+(msg||'Въведи тайния ключ (веднъж, после се помни на това устройство).')+'</small></p>'
+  +'<input id="kin" type="password" autocomplete="off" style="width:100%;margin:8px 0;font-size:16px" placeholder="Таен ключ"><button class="p" id="kok" style="width:100%">Влез</button></div>';
+  $('#kok').onclick=()=>{const k=$('#kin').value.trim();if(!k)return;try{localStorage.setItem(KK,k)}catch(e){}l.innerHTML='Зареждане…';start()}}
+function pending(){const a=diff('items',items),w=diff('wolt',wolt),pf=pfSnap();return a.up.length||a.del.length||w.up.length||w.del.length||js({couriers,DED,wd0})!==snap.st||js(pf)!==js(snap.pf)}
+function setSync(x){const e=$('#sync');e.textContent=x==='saving'?'☁ Запазва се…':x==='err'?'⚠ Няма връзка. Ще опитам пак':'☁ Синхронизирано';e.style.color=x==='err'?'var(--out)':'var(--mu)'}
+function diff(k,arr){const cur={},up=[],del=[];arr.forEach(i=>{cur[i.id]=js(i);if(snap[k][i.id]!==cur[i.id])up.push(i)});Object.keys(snap[k]).forEach(id=>{if(!(id in cur))del.push(id)});return{up,del,cur}}
+const pfSnap=()=>Object.fromEntries(Object.entries(prof).map(([k,v])=>[k,js(v)]));
+function save(){cache();if(busy){dirty=true;return}
+  const a=diff('items',items),w=diff('wolt',wolt),st=js({couriers,DED,wd0}),ops={};
+  if(a.up.length||a.del.length)ops.items={up:a.up,del:a.del};if(w.up.length||w.del.length)ops.wolt={up:w.up,del:w.del};const pf=pfSnap(),pp={};Object.keys(pf).forEach(k=>{if(snap.pf[k]!==pf[k])pp['prof:'+k]=prof[k]});Object.keys(snap.pf).forEach(k=>{if(!(k in pf))pp['prof:'+k]=null});if(st!==snap.st||Object.keys(pp).length)ops.settings={...(st!==snap.st?{couriers,DED,wd0}:{}),...pp};
+  if(!Object.keys(ops).length)return;
+  busy=true;setSync('saving');
+  run().withSuccessHandler(r=>{snap.items=a.cur;snap.wolt=w.cur;snap.st=st;snap.pf=pf;rev=r.rev;busy=false;setSync('ok');cache();if(dirty){dirty=false;save()}})
+   .withFailureHandler(()=>{busy=false;setSync('err');clearTimeout(retry);retry=setTimeout(save,5000)}).applyOps(ops)}
+function applyServer(d){items=norm(d.items)||[];wolt=normW(d.wolt);couriers=d.couriers||[];DED=d.DED??30;wd0=d.wd0||{p:0,f:0};prof=d.prof||{};rev=d.rev||0;
+  snap.items=Object.fromEntries(items.map(i=>[i.id,js(i)]));snap.wolt=Object.fromEntries(wolt.map(i=>[i.id,js(i)]));snap.st=js({couriers,DED,wd0});snap.pf=pfSnap();cache()}
+function loadAll(first){run().withSuccessHandler(d=>{ui=d.ui||{};applyServer(d);if(first){theme(ui.theme||'dark');zoom(ui.zoom||'1');tm=null}uiReady=true;$('#ded').value=$('#bded').value=DED;$('#loading').hidden=true;setSync('ok');render();renderBatch();wrender()})
+  .withFailureHandler(e=>{if(uiReady){setSync('err');return}if(!apiKey())return;$('#loading').textContent='Грешка при зареждане: '+((e&&e.message)||e)+' – провери интернета и отвори пак.'}).load()}
+function poll(){if(document.hidden||busy||dirty||!uiReady)return;if(pending()){save();return}run().withSuccessHandler(r=>{if(r!==rev&&!busy&&!dirty)loadAll(false)}).getRev()}
+setInterval(poll,20000);document.addEventListener('visibilitychange',poll);
+function saveUi(){if(uiReady){cache();run().setUi(js(ui))}}
+function saveFile(n,t,m){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:m}));a.download=n;document.body.appendChild(a);a.click();a.remove()}
+function chk(){}
+const WEEKLY=['Куриер',INC];
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10),addD=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);return iso(d)};
+const sd=d=>d.slice(8)+'.'+d.slice(5,7),wkNo=s=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+3-((d.getDay()+6)%7));const y=new Date(d.getFullYear(),0,4,12);return 1+Math.round(((d-y)/864e5-3+((y.getDay()+6)%7))/7)},pLabel=i=>i.wend?'Сед. '+wkNo(i.date)+' · '+sd(i.date)+' – '+bgd(i.wend):bgd(i.date);
+const lastAmt=n=>{const l=items.filter(i=>i.cat==='Куриер'&&i.party===n).sort((a,b)=>b.date.localeCompare(a.date))[0];return l?(l.gross??l.amt):''};
+const saveCouriers=()=>save();
+function fillWeeks(){const t=new Date();t.setHours(12);t.setDate(t.getDate()-((t.getDay()+6)%7));const o=[];for(let k=0;k<40;k++){const s=iso(t);o.push(`<option value="${s}">Седмица ${wkNo(s)} · ${sd(s)} – ${bgd(addD(s,6))}${k===0?' (тази)':k===1?' (миналата)':''}</option>`);t.setDate(t.getDate()-7)}$('#week').innerHTML=$('#bweek').innerHTML=o.join('');$('#week').selectedIndex=$('#bweek').selectedIndex=1}
+const isIn=i=>i.type==='in',paid=i=>isIn(i)||i.paid,eff=i=>paid(i)?(i.pdate||i.date):null,inPer=d=>d&&(per==='all'||d.slice(0,7)===per);
+function toast(t){const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2500)}
+async function persist(){save()}
+function sync(){
+  const c=$('#cat').value,inc=c===INC,wk=WEEKLY.includes(c),kr=c==='Куриер';$('#dedW').hidden=!kr;$('#la').textContent=kr?'Заработка, общо без ДДС (€)':'Сума (€)';
+  $('#dueW').hidden=$('#paidW').hidden=inc;$('#recW').hidden=!inc;$('#pdate').hidden=inc||!$('#paid').checked;
+  $('#weekW').hidden=!wk;$('#dateW').hidden=wk;
+  $('#lp').textContent=inc?'От кого':c==='Куриер'?'Име на куриера':'На кого';
+  if(inc&&!$('#party').value)$('#party').value='Болт';
+}
+const hi=()=>'Здравей'+(wd0.me?', '+wd0.me.toLocaleUpperCase('bg'):'');
+function render(){if(view==='dash')$('#vt').textContent=hi();
+  const ms=[...new Set(items.map(i=>(eff(i)||i.date).slice(0,7)))].sort().reverse();
+  $('#per').innerHTML='<option value="all">Цялата история</option>'+ms.map(m=>`<option value="${m}">${m.split('-').reverse().join('.')}</option>`).join('');
+  if(per!=='all'&&!ms.includes(per))per='all';$('#per').value=per;
+  $('#pl').innerHTML=[...new Set(items.map(i=>i.party).filter(Boolean))].map(p=>`<option value="${esc(p)}">`).join('');
+  const sum=f=>items.filter(f).reduce((a,i)=>a+i.amt,0);
+  const inc=sum(i=>isIn(i)&&inPer(eff(i))),exp=sum(i=>!isIn(i)&&i.paid&&inPer(eff(i))),res=inc-exp;
+  const open=items.filter(i=>!paid(i)),od=open.filter(i=>(i.due||i.date)<today()).length;
+  dash(inc,exp,res,open,od);
+  const pend=open.sort((a,b)=>(a.due||a.date).localeCompare(b.due||b.date));
+  $('#pend').innerHTML=pend.length?pend.map(i=>{const d=i.due||i.date,late=d<today(),days=Math.round((new Date(d)-new Date(today()))/864e5);
+    return `<div class="row"><input type="checkbox" data-pay="${i.id}" aria-label="Отбележи като платено"><div class="m" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${nm(i,'—')}</b> <small>${i.cat==='Куриер'?'':esc(i.cat)+' · '}${i.wend?'Сед. '+wkNo(i.date)+' · ':''}плащане на ${bgd(d)}${i.note?' · '+esc(i.note):''}</small></div><span class="tag ${late?'out':days<=7?'wr':''}">${late?'просрочено':days===0?'днес':'след '+days+' дни'}</span><b title="${i.gross!=null?eur(i.gross)+' − удръжка '+eur(i.ded):''}">${eur(i.amt)}</b></div>`}).join(''):'<small>Няма неплатени записи.</small>';
+  if(pend.length){const os=pend.reduce((a,i)=>a+i.amt,0),pr=cashAll()-os;$('#pend').insertAdjacentHTML('beforeend',`<div class="row" style="font-weight:600"><span class="m">Общо за плащане</span><b>${eur(os)}</b></div><div class="row"><span class="m">След плащането ще остане</span><b class="${pr>=0?'in':'out'}">${eur(pr)}</b></div>`)}
+  const tms=[...new Set(items.filter(catF).map(i=>cd(i).slice(0,7)))].sort().reverse();if(tm===null||(tm!=='all'&&!tms.includes(tm)))tm=tms[0]||'all';
+  $('#tm').innerHTML='<option value="all">Всички месеци</option>'+tms.map(m=>`<option value="${m}">${m.split('-').reverse().join('.')}</option>`).join('');$('#tm').value=tm;
+  const fl=$('#flt').value,all=items.filter(i=>catF(i)&&(tm==='all'||cd(i).slice(0,7)===tm)&&(fl==='all'||(fl==='paid')===paid(i))).sort((a,b)=>cd(b).localeCompare(cd(a))||b.date.localeCompare(a.date)),np=Math.max(1,Math.ceil(all.length/PS));tp=Math.min(tp,np-1);const rows=all.slice(tp*PS,tp*PS+PS);
+  $('#tbl').innerHTML=rows.length?`<table><tr><th>Дата</th><th>Период</th><th>Кой</th><th>Вид</th><th>Заработка</th><th>Удръжка</th><th>Сума</th><th>Платено</th><th></th></tr>${rows.map(i=>`<tr><td>${i.gross!=null?`<button class="ic" data-x="${i.id}" aria-label="Подробности" aria-expanded="${xo.has(i.id)}">${xo.has(i.id)?'▾':'▸'}</button>`:'<span style="display:inline-block;width:32px"></span>'} ${paid(i)?'✅':'⏳'} ${bgd(cd(i))}</td><td>${pLabel(i)}</td><td>${nm(i,'')} <small>${esc(i.note)}</small></td><td>${esc(i.cat)}</td>${xc(i)}<td class="${isIn(i)?'in':'out'}">${isIn(i)?'+':'−'}${eur(i.amt)}</td><td>${isIn(i)?'':`<input type="checkbox" data-pay="${i.id}" ${i.paid?'checked':''}>`}</td><td><button class="ic" data-ed="${i.id}" aria-label="Редакция">✎</button> <button class="ic" data-del="${i.id}" aria-label="Изтрий">✕</button></td></tr>${xo.has(i.id)?xd(i):''}`).join('')}</table>`:'<small>Няма записи.</small>';
+  $('#pg').innerHTML=np>1?`<button data-pg="-1" ${tp===0?'disabled':''}>←</button><small>Стр. ${tp+1} от ${np} · ${all.length} записа</small><button data-pg="1" ${tp>=np-1?'disabled':''}>→</button>`:'';
+  const now=new Date(),mm=[];for(let k=5;k>=0;k--){const d=new Date(now.getFullYear(),now.getMonth()-k,1);mm.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))}
+  const data=mm.map(m=>({m,i:sum(x=>isIn(x)&&eff(x).slice(0,7)===m),o:sum(x=>!isIn(x)&&x.paid&&eff(x).slice(0,7)===m)})),mx=Math.max(1,...data.flatMap(d=>[d.i,d.o]));
+  $('#mon').innerHTML='<div class="bars">'+data.map(d=>`<div class="bc"><div class="pair"><i style="height:${d.i/mx*100}%;background:var(--in)" title="Приход ${eur(d.i)}"></i><i style="height:${d.o/mx*100}%;background:var(--out)" title="Разход ${eur(d.o)}"></i></div>${d.m.slice(5)}.${d.m.slice(2,4)}</div>`).join('')+'</div><small><span class="in">■</span> приходи &nbsp;<span class="out">■</span> разходи</small>';
+  const cats={};items.filter(i=>!isIn(i)&&i.paid&&inPer(eff(i))).forEach(i=>{const c=i.cat||'Друго';cats[c]=(cats[c]||0)+i.amt});
+  const ce=Object.entries(cats).sort((a,b)=>b[1]-a[1]),cm=ce[0]?ce[0][1]:1;
+  $('#cats').innerHTML=ce.length?ce.map(([c,v])=>`<div class="hb"><span>${esc(c)}</span><i style="width:${v/cm*100}%"></i><b>${eur(v)}</b></div>`).join(''):'<small>Още няма платени разходи.</small>';
+  const cr={};items.filter(i=>i.cat==='Куриер'&&i.party).forEach(i=>{const c=cr[i.party]??={p:0,o:0,n:0};if(i.paid){if(!inPer(eff(i)))return;c.p+=i.amt;c.n++}else c.o+=i.amt});
+  const cl=Object.entries(cr).filter(([,c])=>c.p||c.o).sort((a,b)=>b[1].p-a[1].p),sm=k=>cl.reduce((a,[,c])=>a+c[k],0);
+  $('#crp').textContent=per==='all'?'(цялата история)':'('+per.split('-').reverse().join('.')+')';
+  $('#crt').innerHTML=cl.length?`<table style="min-width:360px"><tr><th>Куриер</th><th>✅ Платено</th><th>⏳ Чака за плащане</th><th>Седмици</th></tr>${cl.map(([n,c])=>`<tr><td><button class="lk" data-prof="${esc(n)}" style="font-weight:700">${av(n,24)} ${esc(n)}</button></td><td>${c.p?`<span class="in">✅ <b>${eur(c.p)}</b></span>`:'—'}</td><td>${c.o?`<span class="wr">⏳ ${eur(c.o)}</span>`:'—'}</td><td>${c.n}</td></tr>`).join('')}<tr><td><b>Общо</b></td><td class="in"><b>✅ ${eur(sm('p'))}</b></td><td class="wr">${sm('o')?'⏳ '+eur(sm('o')):'—'}</td><td></td></tr></table>`:'<small>Още няма записи за куриери.</small>';
+  chk();wrender();wkview();
+}
+function resetForm(){editId=null;['party','amt','due','note'].forEach(k=>$('#'+k).value='');$('#cat').value='Куриер';$('#ded').value=$('#bded').value=DED;fillWeeks();$('#date').value=today();$('#rdate').value=today();$('#paid').checked=false;$('#pdate').value='';$('#cancel').hidden=true;$('#ft').textContent='Нов запис';sync()}
+$('#cat').innerHTML=CATS.map(c=>`<option>${c}</option>`).join('');
+$('#cat').onchange=sync;
+$('#paid').onchange=()=>{if($('#paid').checked&&!$('#pdate').value)$('#pdate').value=today();sync()};
+$('#cancel').onclick=resetForm;
+$('#save').onclick=async()=>{
+  const cat=$('#cat').value,inc=cat===INC,wk=WEEKLY.includes(cat),raw=parseFloat($('#amt').value),cr=cat==='Куриер',dd=cr?(parseFloat($('#ded').value)||0):0,amt=cr?Math.max(0,Math.round((raw-dd)*100)/100):raw,date=wk?$('#week').value:$('#date').value;
+  if(!(raw>0)||!date){toast('Попълни сума и дата');return}
+  if(!inc&&!$('#due').value&&!$('#paid').checked){toast('Избери кога трябва да платиш');return}
+  const p=inc||$('#paid').checked,o=items.find(i=>i.id===editId),yrs=[date.slice(0,4)];
+  const it={id:editId||Date.now().toString(36),type:inc?'in':'out',party:$('#party').value.trim(),cat,amt,date,wend:wk?addD(date,6):'',due:inc?'':$('#due').value,note:$('#note').value.trim(),paid:p,pdate:p?(inc?($('#rdate').value||today()):($('#pdate').value||today())):''};
+  if(cr){Object.assign(it,{gross:raw,ded:dd,b1:(o&&o.b1)||0,od:0,cash:0,pp:0,b0:0});if(o&&o.gross!=null){Object.assign(it,{od:o.od||0,cash:o.cash||0,pp:o.pp||0,b0:o.b0||0});if(raw===o.gross)Object.assign(it,{earn:o.earn,wait:o.wait,adj:o.adj,bonus:o.bonus,tip:o.tip,dep:o.dep})}}
+  if(o){yrs.push(o.date.slice(0,4));items[items.indexOf(o)]=it}else items.push(it);
+  if(cat==='Куриер'&&it.party&&!couriers.includes(it.party)){couriers.push(it.party);saveCouriers()}
+  tm=cd(it).slice(0,7);tp=0;resetForm();render();await persist(yrs);toast('Запазено');closeM()
+};
+document.addEventListener('change',async e=>{
+  const id=e.target.dataset.pay;if(!id)return;
+  const i=items.find(x=>x.id===id);i.paid=e.target.checked;i.pdate=i.paid?today():'';render();await persist([i.date.slice(0,4)]);toast(i.paid?'Отбелязано като платено ✓':'Върнато като неплатено')
+});
+document.addEventListener('click',async e=>{
+  const d=e.target.dataset;
+  if(d.pg){tp+=+d.pg;render()}
+  if(d.x){if(xo.has(d.x))xo.delete(d.x);else xo.add(d.x);render()}
+  if(d.slip)openSlip(d.slip);if(d.prof)openProf(d.prof);
+  if(d.pe)profEdit(d.pe);if(d.pcancel)openProf(d.pcancel);if(d.psave)profSave(d.psave);if(d.pph)$('#pfile').click();if(d.pphx){pph='';$('#pfav').innerHTML=avp(profN,84,'')}if(d.cp)copyTxt(d.cp);
+  if(d.bina){wd0.ina=[...(wd0.ina||[]),d.bina];renderBatch();save()}
+  if(d.bact){wd0.ina=(wd0.ina||[]).filter(x=>x!==d.bact);renderBatch();save()}
+  if(d.bdel&&sure('b'+d.bdel,e.target,'Махни?')){couriers=couriers.filter(x=>x!==d.bdel);wd0.ina=(wd0.ina||[]).filter(x=>x!==d.bdel);renderBatch();saveCouriers()}
+  if(d.del&&sure('d'+d.del,e.target,'Изтрий?')){const i=items.find(x=>x.id===d.del);items=items.filter(x=>x!==i);render();await persist([i.date.slice(0,4)])}
+  if(d.ed){const i=items.find(x=>x.id===d.ed);editId=i.id;
+    if(!CATS.includes(i.cat))$('#cat').insertAdjacentHTML('beforeend',`<option>${esc(i.cat)}</option>`);
+    fillWeeks();if(![...$('#week').options].some(o=>o.value===i.date))$('#week').insertAdjacentHTML('afterbegin',`<option value="${i.date}">${pLabel(i)}</option>`);
+    $('#cat').value=i.cat;$('#party').value=i.party;$('#amt').value=i.gross??i.amt;$('#ded').value=i.gross!=null?i.ded:0;$('#week').value=i.date;$('#date').value=i.date;$('#rdate').value=i.pdate||today();$('#due').value=i.due;$('#note').value=i.note;$('#paid').checked=!!i.paid;$('#pdate').value=i.pdate;
+    $('#cancel').hidden=false;$('#ft').textContent='Редакция на запис';sync();tab(false);openM()}
+});
+$('#per').onchange=e=>{per=e.target.value;render()};$('#flt').onchange=()=>{tp=0;render()};$('#tm').onchange=e=>{tm=e.target.value;tp=0;render()};
+$('#csv').onclick=async()=>{
+  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',h=['Период','Кой','Вид','Сума','Приход/Разход','Срок','Платено','Дата на плащане','Бележка','Заработка без ДДС','Удръжка'];
+  const csv='\ufeff'+[h.map(q).join(';'),...items.map(i=>[pLabel(i),i.party,i.cat,String(i.amt).replace('.',','),isIn(i)?'Приход':'Разход',i.due,paid(i)?'да':'не',i.pdate,i.note,d2(i.gross),d2(i.ded)].map(q).join(';'))].join('\r\n');
+  saveFile('otchetnost.csv',csv,'text/csv;charset=utf-8')
+};
+const armed={};
+function sure(k,b,l){if(armed[k]){armed[k]();return true}const o=b.textContent,t=setTimeout(()=>armed[k]?.(),3500);b.textContent=l;b.classList.add('out');armed[k]=()=>{clearTimeout(t);b.textContent=o;b.classList.remove('out');delete armed[k]};return false}
+function tab(b){$('#single').hidden=b;$('#batch').hidden=!b;$('#ft').classList.toggle('on',!b);$('#t2').classList.toggle('on',b);if(b)renderBatch()}
+$('#ft').onclick=()=>tab(false);$('#t2').onclick=()=>tab(true);
+$('#badd').onclick=()=>{const n=$('#bnew').value.trim();if(!n)return;if(!couriers.includes(n)){couriers.push(n);saveCouriers()}$('#bnew').value='';renderBatch()};
+$('#bfill').onclick=()=>document.querySelectorAll('[data-ba]').forEach(x=>{if(!x.value)x.value=lastAmt(x.dataset.ba)});
+$('#bsave').onclick=async()=>{
+  const date=$('#bweek').value,due=$('#bdue').value,rows=[...document.querySelectorAll('[data-ba]')].map(x=>[x.dataset.ba,parseFloat(x.value)]).filter(r=>r[1]>0);
+  if(!rows.length){toast('Въведи поне една сума');return}
+  if(!due){toast('Избери кога да платиш');return}
+  const dup=rows.filter(([n])=>items.some(i=>i.cat==='Куриер'&&i.party===n&&i.date===date)).map(r=>r[0]);
+  if(dup.length&&!sure('dup',$('#bsave'),'Вече има запис за '+dup.join(', ')+' – натисни пак'))return;
+  const dd=parseFloat($('#bded').value)||0;DED=dd;rows.forEach(([n,a],k)=>items.push({id:Date.now().toString(36)+k,type:'out',party:n,cat:'Куриер',amt:Math.max(0,Math.round((a-dd)*100)/100),gross:a,ded:dd,b0:0,b1:0,od:0,cash:0,pp:0,date,wend:addD(date,6),due,note:'',paid:false,pdate:''}));
+  document.querySelectorAll('[data-ba]').forEach(x=>x.value='');tm=(due||date).slice(0,7);tp=0;render();await persist([date.slice(0,4)]);toast('Записани: '+rows.length);closeM();go('cour')
+};
+const MN=['Януари','Февруари','Март','Април','Май','Юни','Юли','Август','Септември','Октомври','Ноември','Декември'],setV=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;
+let calEl=null,calY=0,calM=0;
+function dateInput(el){let v='';el.type='text';el.readOnly=true;el.placeholder='дд.мм.гггг';el.style.cursor='pointer';
+  Object.defineProperty(el,'value',{get:()=>v,set:x=>{v=x||'';setV.call(el,v?bgd(v):'')}});
+  el.addEventListener('click',()=>openCal(el));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCal(el)}})}
+function openCal(el){calEl=el;const d=el.value?new Date(el.value+'T12:00:00'):new Date();calY=d.getFullYear();calM=d.getMonth();drawCal();$('#cal').hidden=false}
+function closeCal(){$('#cal').hidden=true;if(calEl&&/^wf[12]$/.test(calEl.id))wrender()}
+function drawCal(){const off=(new Date(calY,calM,1,12).getDay()+6)%7,st=new Date(calY,calM,1-off,12),sel=calEl.value,td=today();
+  let h=['Пн','Вт','Ср','Чт','Пт','Сб','Нд'].map(x=>`<span>${x}</span>`).join('');
+  for(let k=0;k<42;k++){const d=new Date(st);d.setDate(st.getDate()+k);const q=iso(d);h+=`<button data-cd="${q}" class="${d.getMonth()!==calM?'o ':''}${q===sel?'s ':''}${q===td?'t':''}">${d.getDate()}</button>`}
+  $('#calt').textContent=MN[calM]+' '+calY;$('#calg').innerHTML=h}
+$('#cal').addEventListener('click',e=>{const t=e.target,d=t.dataset;if(t.id==='cal')return closeCal();
+  if(d.cd){calEl.value=d.cd;calEl.dispatchEvent(new Event('change',{bubbles:true}));closeCal()}
+  if(d.c==='-1'||d.c==='1'){calM+=+d.c;if(calM<0){calM=11;calY--}if(calM>11){calM=0;calY++}drawCal()}
+  if(d.c==='today'){calEl.value=today();closeCal()}if(d.c==='clear'){calEl.value='';closeCal()}});
+['date','due','rdate','pdate','bdue','wd','we','wrd'].forEach(id=>dateInput($('#'+id)));
+const IC={home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',bike:'<circle cx="6" cy="17" r="3.5"/><circle cx="18" cy="17" r="3.5"/><path d="M6 17l4-8h5l3 8M10 9L8.5 6H6M13 9l-2 8"/>',receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',sliders:'<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',plus:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',down:'<path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 19h16"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 016 0v2"/>',doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',moon:'<path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/>'};
+const ic=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+function zoom(z){document.documentElement.style.zoom=z;document.documentElement.style.setProperty('--z',z);ui.zoom=z;saveUi();$('#zm').value=z}
+$('#zm').onchange=e=>zoom(e.target.value);
+let view='dash';const T={week:'Седмичен резултат',wolt:'WOLT',dash:'Здравей',cour:'Куриери',inv:'Фактури и разходи',hist:'История',set:'Настройки'};
+const catF=i=>view==='cour'?i.cat==='Куриер':view==='inv'?(!isIn(i)&&i.cat!=='Куриер'):true;
+function ring(p,c,sub){const R=52,C=2*Math.PI*R,t=p.reduce((a,x)=>a+x[0],0)||1;let o=0;
+  const arcs=p.filter(x=>x[0]>0).map(x=>{const l=x[0]/t*C,e=`<circle cx="70" cy="70" r="${R}" fill="none" style="stroke:var(${x[1]})" stroke-width="13" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-o}" transform="rotate(-90 70 70)"/>`;o+=l;return e}).join('');
+  return `<svg viewBox="0 0 140 140" width="150" height="150" style="flex:none"><circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--bd)" stroke-width="13"/>${arcs}<text x="70" y="62" text-anchor="middle" fill="var(--mu)" font-size="10">${sub}</text><text x="70" y="83" text-anchor="middle" fill="var(--tx)" font-size="16" font-weight="700">${c}</text></svg>`}
+function dash(inc,exp,res,open,od){
+  const cash=cashAll();const ls=open.filter(i=>(i.due||i.date)<today()).reduce((a,i)=>a+i.amt,0),os=open.reduce((a,i)=>a+i.amt,0);
+  const L=(c,t,v)=>`<div><span><u style="color:var(${c})">●</u> ${t}</span><b>${v}</b></div>`;
+  $('#pl').textContent=per==='all'?'(цялата история)':'('+per.split('-').reverse().join('.')+')';
+  $('#rings').innerHTML=`<div class="rc">${ring(res>=0?[[exp,'--out'],[res,'--in']]:[[inc,'--out']],eur(res),res>=0?'Печалба':'Загуба')}<div class="lg">${L('--in','Получено от Болт',eur(inc))}${L('--out','Платено',eur(exp))}${L(res>=0?'--in':'--out',res>=0?'Печалба':'Загуба',eur(res))}</div></div><div class="rc">${ring([[exp,'--in'],[os-ls,'--wr'],[ls,'--out']],eur(os),'Остава')}<div class="lg">${L('--in','Платено ✅',eur(exp))}${L('--wr','Чака ⏳',eur(os-ls))}${L('--out','Просрочено ⚠',eur(ls))}</div></div><div class="rc">${ring(cash-os>=0?[[os,'--wr'],[cash-os,'--in']]:[[Math.max(cash,0),'--wr'],[os-Math.max(cash,0),'--out']],eur(cash-os),'Ще остане')}<div class="lg">${L('--in','Налични сега',eur(cash))}${L('--wr','Чака за плащане ⏳','−'+eur(os))}${L(cash-os>=0?'--in':'--out','Ще остане след плащанията',eur(cash-os))}</div></div>`;
+  const nc=open.filter(i=>i.cat==='Куриер').length,ni=open.length-nc;
+  $('#b1').textContent=nc;$('#b1').hidden=!nc;$('#b2').textContent=ni;$('#b2').hidden=!ni;
+  const rc=items.filter(paid).sort((a,b)=>cd(b).localeCompare(cd(a))).slice(0,6);
+  $('#recent').innerHTML=rc.length?rc.map(i=>`<div class="row"><div class="m" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">✅ <b>${nm(i,esc(i.cat))}</b> <small>${bgd(cd(i)).slice(0,5)}${i.wend?' · Сед. '+wkNo(i.date):''}</small></div><b class="${isIn(i)?'in':'out'}">${isIn(i)?'+':'−'}${eur(i.amt)}</b></div>`).join(''):'<small>Още няма платени.</small>';alerts()}
+function go(v){view=v;document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='v-'+v);$('#vt').textContent=v==='dash'?hi():T[v];$('.app').classList.toggle('w',v==='wolt');document.documentElement.classList.toggle('w',v==='wolt');$('#nw').hidden=v==='wolt';$('#perw').hidden=!(v==='dash'||v==='cour');
+  const sl=$('#s-'+v);if(sl)sl.appendChild($('#recs'));if(v==='set'){$('#sded').value=DED;$('#sme').value=wd0.me||''}tm=null;tp=0;render();scrollTo(0,0)}
+function openM(){$('#modal').hidden=false}function closeM(){$('#modal').hidden=true;$('#imodal').hidden=true;$('#smodal').hidden=true;$('#pmodal').hidden=true}
+function theme(t){document.documentElement.dataset.theme=t;ui.theme=t;saveUi();$('#theme').innerHTML=t==='dark'?'<i>'+ic('sun')+'</i>Светла тема':'<i>'+ic('moon')+'</i>Тъмна тема'}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-v],[data-a]');if(!b)return;if(b.dataset.v)return go(b.dataset.v);const a=b.dataset.a;
+  if(a==='new'){resetForm();tab(false);openM()}if(a==='week'){tab(true);openM()}if(a==='inv')go('inv');if(a==='binv')$('#ipdf').click();
+  if(a==='imp'){tab(true);openM();toast('Избери „Платете на“ и натисни „Импорт от справка на Болт“')}});
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal'||e.target.id==='mx')closeM()});$('#cancel').addEventListener('click',closeM);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#cal').hidden)closeCal();else closeM()}});
+$('#theme').onclick=()=>theme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+$('#sme').onchange=e=>{wd0={...wd0,me:e.target.value.trim()};save();render();toast('Запазено')};
+$('#sded').onchange=e=>{DED=parseFloat(e.target.value)||0;$('#ded').value=$('#bded').value=DED;save();toast('Запазено')};
+document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=ic(e.dataset.i));function wkMon(s){const d=new Date(s+'T12:00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return iso(d)}
+function saveBlob(n,b){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove()}
+function renderBatch(){
+  const cur={};document.querySelectorAll('[data-ba]').forEach(x=>cur[x.dataset.ba]=x.value);
+  const ina=wd0.ina||[],act=couriers.filter(n=>!ina.includes(n)),old=couriers.filter(n=>ina.includes(n));
+  $('#blist').innerHTML=(act.length?act.map(n=>`<div class="row"><span class="m">${av(n,26)} <b>${esc(n)}</b>${lastAmt(n)?` <small>последно ${eur(lastAmt(n))}</small>`:''}</span><input type="number" step="0.01" min="0" inputmode="decimal" placeholder="заработка €" data-ba="${esc(n)}" value="${esc(cur[n]??'')}" style="width:110px"><button class="ic" data-bina="${esc(n)}" title="Неактивен – скрий от списъка" aria-label="Скрий">⏸</button></div>`).join(''):'<small>Няма активни куриери. Добави по-горе.</small>')
+   +(old.length?`<details style="margin-top:10px"><summary style="cursor:pointer;color:var(--mu)">Неактивни (${old.length})</summary>${old.map(n=>`<div class="row"><span class="m">${esc(n)}</span><button class="ic" data-bact="${esc(n)}">▶ Върни</button><button class="ic" data-bdel="${esc(n)}" aria-label="Изтрий от списъка">✕</button></div>`).join('')}</details>`:'')}
+function alerts(){const ina=wd0.ina||[],by={};items.filter(i=>i.cat==='Куриер'&&i.gross!=null&&i.party).forEach(i=>(by[i.party]=by[i.party]||[]).push(i));
+  const lw=Object.values(by).flat().reduce((m,i)=>i.date>m?i.date:m,''),out=[];
+  Object.entries(by).forEach(([n,L])=>{if(ina.includes(n))return;L.sort((a,b)=>a.date.localeCompare(b.date));
+    const cur=L.find(i=>i.date===lw),prev=L.filter(i=>i.date<lw).slice(-4);
+    if(prev.length>=2){const avg=prev.reduce((a,i)=>a+i.gross,0)/prev.length,g=cur?cur.gross:0;if(avg>=50&&g<avg*0.6)out.push(`📉 <b>${esc(n)}</b>: Сед. ${wkNo(lw)} – ${eur(g)}${cur?'':' (няма запис)'}, обикновено ~${eur(avg)} (−${Math.round((1-g/avg)*100)}%)`)}
+    const S=L.filter(i=>i.b1!=null).slice(-3);if(S.length===3&&S.every(i=>i.b1<0)&&-S[1].b1>-S[0].b1&&-S[2].b1>-S[1].b1)out.push(`⚠ <b>${esc(n)}</b>: салдото расте 3 седмици подред – ${S.map(i=>eur(-i.b1)).join(' → ')} (дължи на Болт)`)});
+  const el=$('#alerts');el.hidden=!out.length;el.innerHTML=out.length?`<h2>Внимание</h2>${out.map(x=>`<div class="row"><span class="m" style="white-space:normal">${x}</span></div>`).join('')}`:''}
+function wkview(){const W={};
+  items.forEach(i=>{const k=wkMon(i.date),w=W[k]??={k,inc:0,sub:null,has:0,cp:0,cn:0,cd:0,cg:0,ot:0};
+    if(isIn(i)){w.inc+=i.amt;w.has=1;if(i.sub!=null)w.sub=(w.sub||0)+i.sub}else if(i.cat==='Куриер'){w.cp+=i.amt;w.cn++;if(i.paid)w.cd++;w.cg+=(i.gross??i.amt)}else w.ot+=i.amt});
+  const R=Object.values(W).sort((a,b)=>b.k.localeCompare(a.k)).slice(0,30),
+    cmp=w=>!w.has?(w.cn?'няма фактура':''):!w.cn?'няма куриери':w.sub==null?'—':Math.abs(w.sub-w.cg)<0.02?'<span class="in">✅ съвпада</span>':`<span class="wr">⚠ разлика ${eur(w.sub-w.cg)}</span>`;
+  $('#wkt').innerHTML=R.length?`<table style="min-width:760px"><tr><th>Седмица</th><th>Фактура от Болт</th><th>Куриери</th><th>Платени</th><th>Други разходи</th><th>Резултат</th><th>Сравнение</th></tr>${R.map(w=>{const r=w.inc-w.cp-w.ot;return `<tr><td>Сед. ${wkNo(w.k)} · ${sd(w.k)}–${bgd(addD(w.k,6))}</td><td>${w.has?eur(w.inc):'—'}</td><td>${w.cn?eur(w.cp):'—'}</td><td>${w.cn?w.cd+' от '+w.cn:'—'}</td><td>${w.ot?eur(w.ot):'—'}</td><td><b class="${r>=0?'in':'out'}">${eur(r)}</b></td><td>${cmp(w)}</td></tr>`}).join('')}</table>`:'<small>Още няма данни.</small>'}
+function drawSlip(i){const cv=$('#scv'),x=cv.getContext('2d'),S=2,W=900,rows=i.earn!=null?[['Основна заработка',i.earn,1],['Чакане',i.wait],['Бонус',i.bonus],['Бакшиш',i.tip],['Корекции',i.adj],['Депозити',i.dep]].filter(r=>r[2]||r[1]):[],sal=i.b1<0?[['Салдо към Болт (дължиш)',-i.b1]]:[];
+  const H=228+(rows.length+3+sal.length)*50+70;cv.width=W*S;cv.height=H*S;x.scale(S,S);x.fillStyle='#fff';x.fillRect(0,0,W,H);
+  const F='"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif',txt=(t,px,py,sz,w,c,al)=>{x.font=`${w||400} ${sz}px ${F}`;x.fillStyle=c||'#111';x.textAlign=al||'left';x.fillText(t,px,py)};
+  x.fillStyle='#1f8a70';x.fillRect(0,0,W,86);txt('CityFlow LTD',40,54,28,700,'#fff');txt('Разплащателна бележка',W-40,54,20,500,'#fff','right');
+  txt(i.party||'',40,140,30,700);txt(`Седмица ${wkNo(i.date)} · ${bgd(i.date)} – ${bgd(i.wend||addD(i.date,6))}`,40,174,18,400,'#555');
+  let y=228;const line=(l,v,b,c)=>{txt(l,40,y,b?22:19,b?700:400,c);txt(v,W-40,y,b?22:19,b?700:400,c,'right');x.strokeStyle='#e5e5e5';x.beginPath();x.moveTo(40,y+16);x.lineTo(W-40,y+16);x.stroke();y+=50};
+  rows.forEach(r=>line(r[0],eur(r[1]||0)));line('Заработка общо',eur(i.gross),1);line('Удръжка','−'+eur(i.ded||0));line('ЗА ПЛАЩАНЕ',eur(i.amt),1,'#1f8a70');sal.forEach(r=>line(r[0],eur(r[1]),0,'#b7791f'));
+  txt(i.paid?'Платено на '+bgd(i.pdate):'Дата на плащане: '+bgd(i.due||i.date),40,y+20,18,600,i.paid?'#1f8a70':'#333');slipI=i}
+let slipI=null;
+function openSlip(id){const i=items.find(x=>x.id===id);if(!i)return;drawSlip(i);$('#smodal').hidden=false}
+const slipName=()=>'Бележка '+(slipI.party||'')+' сед'+wkNo(slipI.date);
+function pdfFromJpeg(jpg,w,h){const enc=s=>new TextEncoder().encode(s),PW=595,PH=Math.round(595*h/w),parts=[],offs=[];let len=0;
+  const add=v=>{const b=typeof v==='string'?enc(v):v;parts.push(b);len+=b.length},ob=(n,body)=>{offs[n]=len;add(n+' 0 obj\n'+body+'\nendobj\n')};
+  add('%PDF-1.4\n');ob(1,'<</Type/Catalog/Pages 2 0 R>>');ob(2,'<</Type/Pages/Kids[3 0 R]/Count 1>>');ob(3,`<</Type/Page/Parent 2 0 R/MediaBox[0 0 ${PW} ${PH}]/Resources<</XObject<</Im0 4 0 R>>>>/Contents 5 0 R>>`);
+  offs[4]=len;add(`4 0 obj\n<</Type/XObject/Subtype/Image/Width ${w}/Height ${h}/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length ${jpg.length}>>\nstream\n`);add(jpg);add('\nendstream\nendobj\n');
+  const c=`q ${PW} 0 0 ${PH} 0 0 cm /Im0 Do Q`;ob(5,`<</Length ${c.length}>>\nstream\n${c}\nendstream`);const xr=len;
+  add('xref\n0 6\n0000000000 65535 f \n'+[1,2,3,4,5].map(n=>String(offs[n]).padStart(10,'0')+' 00000 n \n').join('')+`trailer\n<</Size 6/Root 1 0 R>>\nstartxref\n${xr}\n%%EOF`);return new Blob(parts,{type:'application/pdf'})}
+$('#spng').onclick=()=>$('#scv').toBlob(b=>saveBlob(slipName()+'.png',b));
+$('#spdf').onclick=()=>{const cv=$('#scv'),u=atob(cv.toDataURL('image/jpeg',0.92).split(',')[1]),a=new Uint8Array(u.length);for(let k=0;k<u.length;k++)a[k]=u.charCodeAt(k);saveBlob(slipName()+'.pdf',pdfFromJpeg(a,cv.width,cv.height))};
+let pph,profN;
+const fmtIban=v=>String(v||'').replace(/\s+/g,'').toUpperCase().replace(/(.{4})/g,'$1 ').trim();
+const ibanOk=v=>{const s=String(v||'').replace(/\s+/g,'').toUpperCase();if(!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(s))return false;let m=0;for(const ch of (s.slice(4)+s.slice(0,4)).replace(/[A-Z]/g,c=>c.charCodeAt(0)-55))m=(m*10+(+ch))%97;return m===1};
+function avp(n,s,photo){const ini=String(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+  return photo?`<img class="av" src="${photo}" style="width:${s}px;height:${s}px" alt="">`:`<span class="av" style="width:${s}px;height:${s}px;font-size:${Math.round(s*.4)}px">${esc(ini)}</span>`}
+function av(n,s){return avp(n,s,(prof[n]||{}).photo)}
+function nm(i,fb){return i.cat==='Куриер'&&i.party?`<button class="lk" data-prof="${esc(i.party)}" style="font-weight:700">${av(i.party,22)} ${esc(i.party)}</button>`:(esc(i.party)||fb)}
+async function copyTxt(t){try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e2){}a.remove()}toast('Копирано: '+t)}
+function readPhoto(f){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{let out='';for(const [S,Q] of [[220,.72],[160,.7],[120,.65]]){const c=document.createElement('canvas');c.width=c.height=S;const x=c.getContext('2d'),m=Math.min(im.width,im.height);x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);out=c.toDataURL('image/jpeg',Q);if(out.length<30000)break}URL.revokeObjectURL(u);res(out)};im.onerror=()=>rej(new Error('img'));im.src=u})}
+function profHead(n){profN=n;const p=prof[n]||{},has=p.full||p.phone||p.email||p.iban||p.veh||p.plate,
+  R=(l,v,x)=>`<div class="pr"><small>${l}</small><span>${v||'<span style="color:var(--mu)">—</span>'}</span>${v&&x?x:''}</div>`,
+  tel=p.phone?`<a href="tel:${esc(p.phone.replace(/[^\d+]/g,''))}">${esc(p.phone)}</a>`:'',mail=p.email?`<a href="mailto:${esc(p.email)}">${esc(p.email)}</a>`:'',
+  vh=(p.veh||p.plate)?`<b>${esc(p.veh||'')}</b>${p.plate?` <span style="font-family:ui-monospace,Consolas,monospace;font-weight:700;border:1px solid var(--bd);border-radius:6px;padding:2px 8px;margin-left:6px;letter-spacing:.6px">${esc(p.plate)}</span>`:''}`:'',
+  ib=p.iban?`<b style="font-family:ui-monospace,Consolas,monospace;letter-spacing:.4px">${esc(fmtIban(p.iban))}</b>${ibanOk(p.iban)?'':' <small class="wr">⚠ IBAN-ът изглежда грешен – провери го</small>'}`:'';
+  return `<div id="phead"><div style="display:flex;gap:16px;align-items:center;margin:0 0 14px">${av(n,84)}<div style="flex:1;min-width:0"><h2 style="margin:0;font-size:22px">${esc(n)}</h2>${p.full&&p.full!==n?`<div style="color:var(--mu)">${esc(p.full)}</div>`:''}</div></div>
+<div class="pc">${R('Телефон',tel,`<button class="ic" data-cp="${esc(p.phone||'')}">Копирай</button>`)}${R('Имейл',mail,`<button class="ic" data-cp="${esc(p.email||'')}">Копирай</button>`)}${R('IBAN',ib,`<button class="ic" data-cp="${esc(p.iban||'')}">Копирай</button>`)}${R('Превозно средство',vh,p.plate?`<button class="ic" data-cp="${esc(p.plate)}">Копирай номера</button>`:'')}</div>
+<div style="margin:10px 0 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button data-pe="${esc(n)}">✎ ${has||p.photo?'Редактирай данните':'Добави телефон, IBAN, снимка'}</button>${has?'':'<small style="color:var(--mu)">Още няма въведени данни.</small>'}</div></div>`}
+function profEdit(n){profN=n;pph=undefined;const p=prof[n]||{},I=(id,l,v,ph,t)=>`<div><label>${l}</label><input id="${id}" value="${esc(v||'')}" placeholder="${ph||''}" ${t?`type="${t}"`:''} autocomplete="off"></div>`;
+  $('#phead').innerHTML=`<h2 style="margin:0 0 12px;font-size:20px">${esc(n)}</h2><div style="display:flex;gap:14px;align-items:center;margin-bottom:12px"><span id="pfav">${avp(n,84,p.photo)}</span><div style="display:flex;gap:8px;flex-wrap:wrap"><button data-pph="1">Качи снимка</button><button data-pphx="1">Махни снимката</button></div></div>
+<div class="f">${I('pf_full','Пълно име (3 имена)',p.full,'Иван Иванов Петров')}${I('pf_phone','Телефон',p.phone,'+359 88 123 4567','tel')}${I('pf_email','Имейл',p.email,'name@mail.bg','email')}${I('pf_iban','IBAN',p.iban?fmtIban(p.iban):'','BG00 XXXX 0000 0000 0000 00')}<div><label>Превозно средство</label><select id="pf_veh">${['','Кола','Мотор','Скутер','Колело','Друго'].map(o=>`<option value="${o}" ${o===(p.veh||'')?'selected':''}>${o||'— не е посочено —'}</option>`).join('')}</select></div><div id="pf_plW" ${['','Колело'].includes(p.veh||'')?'hidden':''}><label>Регистрационен номер</label><input id="pf_plate" value="${esc(p.plate||'')}" placeholder="СВ 1234 АВ" autocomplete="off"></div></div>
+<div style="display:flex;gap:8px;margin:12px 0 18px"><button class="p" data-psave="${esc(n)}">Запази</button><button data-pcancel="${esc(n)}">Отказ</button></div>`}
+function profSave(n){const v=id=>$('#'+id).value.trim(),p={full:v('pf_full'),phone:v('pf_phone'),email:v('pf_email'),iban:v('pf_iban').replace(/\s+/g,'').toUpperCase(),veh:$('#pf_veh').value,plate:['','Колело'].includes($('#pf_veh').value)?'':v('pf_plate').toUpperCase(),photo:pph===undefined?(prof[n]||{}).photo||'':pph};
+  if(p.photo&&p.photo.length>40000){toast('Снимката е твърде голяма');return}
+  if(Object.values(p).some(Boolean))prof[n]=p;else delete prof[n];save();render();openProf(n);toast('Запазено')}
+document.addEventListener('change',e=>{if(e.target.id==='pf_veh')$('#pf_plW').hidden=['','Колело'].includes(e.target.value)});
+$('#pfile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{pph=await readPhoto(f);$('#pfav').innerHTML=avp(profN,84,pph)}catch(err){toast('Не успях да прочета снимката')}};
+function openProf(n){const L=items.filter(i=>i.cat==='Куриер'&&i.party===n),G=L.filter(i=>i.gross!=null).sort((a,b)=>a.date.localeCompare(b.date)),tot=G.reduce((a,i)=>a+i.gross,0),tip=G.reduce((a,i)=>a+(i.tip||0),0),
+    best=G.reduce((m,i)=>!m||i.gross>m.gross?i:m,null),pd=L.filter(i=>i.paid).reduce((a,i)=>a+i.amt,0),op=L.filter(i=>!i.paid).reduce((a,i)=>a+i.amt,0),last=G[G.length-1],ch=G.slice(-16),mx=Math.max(1,...ch.map(i=>i.gross)),
+    K=(t,v,s)=>`<div><small>${t}</small><b>${v}</b>${s?`<small>${s}</small>`:''}</div>`;
+  $('#pbody').innerHTML=`${profHead(n)}<div class="dg" style="max-width:none;margin-bottom:16px">${K('Седмици',G.length)}${K('Общо заработка',eur(tot))}${K('Средна седмица',eur(G.length?tot/G.length:0))}${K('Най-добра седмица',eur(best?best.gross:0),best?'Сед. '+wkNo(best.date):'')}${K('Общо бакшиши',eur(tip))}${K('Платено',eur(pd))}${K('Чака',eur(op))}${last&&last.b1<0?K('Салдо',eur(-last.b1),'дължи на Болт'):''}</div>
+<small style="color:var(--mu)">Заработка по седмици (бакшишът е в жълто)</small><div class="bars" style="height:150px;margin-top:8px">${ch.length?ch.map(i=>`<div class="bc" title="Сед. ${wkNo(i.date)}: ${eur(i.gross)}, бакшиш ${eur(i.tip||0)}"><div style="height:${Math.round(i.gross/mx*110)}px;background:var(--ac);position:relative;border-radius:3px 3px 0 0"><div style="position:absolute;bottom:0;left:0;right:0;height:${Math.round((i.tip||0)/mx*110)}px;background:var(--wr)"></div></div>${wkNo(i.date)}</div>`).join(''):'<small>Още няма данни със заработка.</small>'}</div>`;$('#pmodal').hidden=false}
+['smodal','pmodal'].forEach(id=>$('#'+id).addEventListener('click',e=>{if(e.target.id===id||e.target.dataset.cl)$('#'+id).hidden=true}));
+let wolt=[],wd0={p:0,f:0},wedit=null;
+const normW=a=>Array.isArray(a)?a.filter(i=>i&&typeof i.date==='string'&&isFinite(i.net)).map(i=>({...i,gross:+i.gross||0,net:+i.net,paid:!!i.paid})):[];
+const wnet=(g,p,f)=>Math.round((g-g*p/100-f)*100)/100,wcd=i=>i.paid?(i.pdate||i.date):(i.exp||i.date);
+function wprev(){const g=parseFloat($('#wg').value)||0,p=parseFloat($('#wp').value)||0,f=parseFloat($('#wf').value)||0;
+  $('#wprev').innerHTML=g?`${eur(g)}${p?` − ${p}% (${eur(g*p/100)})`:''}${f?` − ${eur(f)}`:''} = <b style="color:var(--ac);font-size:20px">${eur(wnet(g,p,f))}</b> <small>нето</small>`:'<small>Въведи бруто сума и ще видиш резултата.</small>'}
+function wreset(){wedit=null;$('#wd').value=today();['wn','wg','wt','we','wrd'].forEach(k=>$('#'+k).value='');$('#wp').value=wd0.p||'';$('#wf').value=wd0.f||'';$('#wr').checked=false;$('#wrd').hidden=true;$('#wexpW').hidden=false;$('#wcancel').hidden=true;$('#wft').textContent='Нов запис';wprev()}
+function wrender(){
+  const a=$('#wf1').value,b=$('#wf2').value,L=wolt.filter(i=>(!a||i.date>=a)&&(!b||i.date<=b)).sort((x,y)=>wcd(y).localeCompare(wcd(x))),S=(f,k)=>L.filter(f).reduce((t,i)=>t+(i[k]||0),0);
+  const g=S(()=>1,'gross'),n=S(()=>1,'net'),tp=S(()=>1,'tip'),rv=S(i=>i.paid,'net'),pn=S(i=>!i.paid,'net'),R=(c,t,v)=>`<div><span><u style="color:var(${c})">●</u> ${t}</span><b>${v}</b></div>`;
+  const wk={};L.forEach(i=>{const k=wkMon(i.date),w=wk[k]??={g:0,t:0};w.g+=i.gross;w.t+=i.tip||0});const ks=Object.keys(wk).sort().slice(-12),mx=Math.max(1,...ks.map(k=>wk[k].g));
+  $('#wsum').innerHTML=`<div class="rc">${ring([[Math.max(rv,0),'--ac'],[Math.max(pn,0),'--wr']],eur(n),'Нето общо')}<div class="lg">${R('--mu','Бруто',eur(g))}${R('--out','Удръжки','−'+eur(g-n))}${R('--wr','Бакшиш (вкл. в бруто)',eur(tp)+(g?' · '+Math.round(tp/g*100)+'%':''))}${R('--ac','Получено ✅',eur(rv))}${R('--wr','Чака ⏳',eur(pn))}</div></div>
+<div class="rc" style="display:block"><small style="color:var(--mu)">Бруто по седмици (бакшишът е в жълто)</small><div class="bars" style="height:140px;margin-top:8px">${ks.length?ks.map(k=>`<div class="bc" title="Сед. ${wkNo(k)}: ${eur(wk[k].g)}, бакшиш ${eur(wk[k].t)}"><div style="height:${Math.round(wk[k].g/mx*100)}px;background:var(--ac);position:relative;border-radius:3px 3px 0 0"><div style="position:absolute;bottom:0;left:0;right:0;height:${Math.round(wk[k].t/mx*100)}px;background:var(--wr)"></div></div>${wkNo(k)}</div>`).join(''):'<small>Няма данни за избрания период.</small>'}</div></div>`;
+  $('#wtbl').innerHTML=L.length?`<table><tr><th>Дата</th><th>Описание</th><th>Бруто</th><th>Бакшиш</th><th>Удръжка</th><th>Нето</th><th>Получено</th><th></th></tr>${L.map(i=>`<tr><td>${i.paid?'✅':'⏳'} ${bgd(wcd(i))}</td><td>${esc(i.note)}</td><td>${eur(i.gross)}</td><td>${i.tip?eur(i.tip):'—'}</td><td>${eur(i.gross-i.net)} <small>${[i.pct?i.pct+'%':'',i.fix?eur(i.fix):''].filter(Boolean).join(' + ')}</small></td><td><b style="color:var(${i.net<0?'--out':'--ac'})">${eur(i.net)}</b></td><td><input type="checkbox" data-wpay="${i.id}" ${i.paid?'checked':''}></td><td><button class="ic" data-wed="${i.id}" aria-label="Редакция">✎</button> <button class="ic" data-wdel="${i.id}" aria-label="Изтрий">✕</button></td></tr>`).join('')}</table>`:'<small>Няма записи за избрания период.</small>'}
+['wg','wp','wf'].forEach(k=>$('#'+k).addEventListener('input',wprev));['wf1','wf2'].forEach(id=>dateInput($('#'+id)));
+$('#wr').onchange=()=>{const c=$('#wr').checked;$('#wrd').hidden=!c;$('#wexpW').hidden=c;if(c&&!$('#wrd').value)$('#wrd').value=today()};
+$('#wsave').onclick=()=>{const g=parseFloat($('#wg').value),p=parseFloat($('#wp').value)||0,f=parseFloat($('#wf').value)||0,d=$('#wd').value,c=$('#wr').checked;
+  if(!(g>0)||!d){toast('Попълни бруто сума и дата');return}
+  const it={id:wedit||Date.now().toString(36),date:d,note:$('#wn').value.trim(),gross:g,tip:parseFloat($('#wt').value)||0,pct:p,fix:f,net:wnet(g,p,f),paid:c,pdate:c?($('#wrd').value||today()):'',exp:$('#we').value};
+  if(wedit)wolt[wolt.findIndex(x=>x.id===wedit)]=it;else wolt.push(it);
+  wd0={...wd0,p,f};save();wreset();wrender();toast('Запазено')};
+$('#wcancel').onclick=wreset;
+$('#wcsv').onclick=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',h=['Дата','Описание','Бруто','Бакшиш','Удръжка %','Удръжка €','Нето','Получено','Дата на получаване','Очаквано на'];
+  saveFile('wolt.csv','\ufeff'+[h.map(q).join(';'),...wolt.map(i=>[i.date,i.note,d2(i.gross),d2(i.tip),d2(i.pct),d2(i.fix),d2(i.net),i.paid?'да':'не',i.pdate,i.exp].map(q).join(';'))].join('\r\n'),'text/csv;charset=utf-8')};
+document.addEventListener('click',e=>{const d=e.target.dataset;
+  if(d.wr){const t=today();let a='',b='';if(d.wr==='w'){a=wkMon(t);b=addD(a,6)}if(d.wr==='m'){a=t.slice(0,8)+'01';b=iso(new Date(+t.slice(0,4),+t.slice(5,7),0,12))}$('#wf1').value=a;$('#wf2').value=b;wrender()}
+  if(d.wdel&&sure('w'+d.wdel,e.target,'Изтрий?')){wolt=wolt.filter(x=>x.id!==d.wdel);save();wrender()}
+  if(d.wed){const i=wolt.find(x=>x.id===d.wed);wedit=i.id;$('#wd').value=i.date;$('#wn').value=i.note;$('#wg').value=i.gross;$('#wt').value=i.tip||'';$('#wp').value=i.pct||'';$('#wf').value=i.fix||'';$('#wr').checked=i.paid;$('#wrd').value=i.pdate;$('#we').value=i.exp||'';$('#wrd').hidden=!i.paid;$('#wexpW').hidden=i.paid;$('#wcancel').hidden=false;$('#wft').textContent='Редакция на запис';wprev();scrollTo({top:0,behavior:'smooth'})}});
+document.addEventListener('change',e=>{const id=e.target.dataset.wpay;if(!id)return;const i=wolt.find(x=>x.id===id);i.paid=e.target.checked;i.pdate=i.paid?today():'';save();wrender();toast(i.paid?'Отбелязано като получено ✓':'Върнато като чакащо')});
+wreset();
+zoom('1');
+theme('dark');
+async function infl(b){return new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('deflate'))).text()}
+function cmapOf(t){const m=new Map(),H=h=>String.fromCharCode(...h.match(/..../g).map(x=>parseInt(x,16)));
+  for(const b of t.matchAll(/beginbfchar([\s\S]*?)endbfchar/g))for(const r of b[1].matchAll(/<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>/g))m.set(parseInt(r[1],16),H(r[2]));
+  for(const b of t.matchAll(/beginbfrange([\s\S]*?)endbfrange/g))for(const r of b[1].matchAll(/<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>\s*(?:<([0-9a-fA-F]+)>|\[([^\]]*)\])/g)){const lo=parseInt(r[1],16),hi=parseInt(r[2],16);
+    if(r[3]){const b0=parseInt(r[3],16),ln=r[3].length;for(let c=lo;c<=hi;c++)m.set(c,H((b0+c-lo).toString(16).padStart(ln,'0')))}
+    else{const A=[...r[4].matchAll(/<([0-9a-fA-F]+)>/g)];for(let c=lo;c<=hi&&c-lo<A.length;c++)m.set(c,H(A[c-lo][1]))}}
+  return m}
+async function pdfLines(buf){
+  const u=new Uint8Array(buf),bin=new TextDecoder('latin1').decode(u),O={},tu={},nm={},cm={},runs=[];
+  for(const m of bin.matchAll(/(\d+) 0 obj([\s\S]*?)endobj/g)){
+    const n=+m[1],body=m[2],si=body.indexOf('stream'),d=si<0?body:body.slice(0,si);let txt='';
+    for(const r of d.matchAll(/\/([A-Za-z]+\d+) (\d+) 0 R/g))nm[r[1]]=+r[2];
+    const t=d.match(/\/ToUnicode (\d+) 0 R/);if(t)tu[n]=+t[1];
+    if(si>=0){let a=m.index+m[0].indexOf('obj')+3+si+6;if(u[a]===13&&u[a+1]===10)a+=2;else if(u[a]===10)a++;
+      const L=d.match(/\/Length (\d+)(?!\d| 0 R)/),by=u.subarray(a,L?a+ +L[1]:bin.indexOf('endstream',a));
+      if(/FlateDecode/.test(d)){for(const k of [0,1,2]){try{txt=await infl(by.subarray(0,by.length-k));break}catch(e){}}}else txt=new TextDecoder('latin1').decode(by)}
+    O[n]=txt;if(/begin(bfchar|bfrange)/.test(txt))cm[n]=cmapOf(txt)}
+  for(const n in O){if(!/BT[\s\S]*Tf[\s\S]*ET/.test(O[n]))continue;
+    for(const b of O[n].matchAll(/BT([\s\S]*?)ET/g)){const s=b[1],f=(s.match(/\/([A-Za-z]+\d+) [\d.]+ Tf/)||[])[1],tm=s.match(/(-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) Tm/);if(!tm)continue;
+      const mp=cm[tu[nm[f]]]||new Map();let t='';for(const h of s.matchAll(/<([0-9a-fA-F]+)>/g))for(const c of h[1].match(/..../g)||[])t+=mp.get(parseInt(c,16))??'';
+      runs.push({t,x:+tm[5],y:+tm[6]})}}
+  runs.sort((a,b)=>a.y-b.y||a.x-b.x);const L=[];for(const r of runs){const l=L[L.length-1];if(l&&Math.abs(l.y-r.y)<4)l.r.push(r);else L.push({y:r.y,r:[r]})}
+  return L.map(l=>l.r.sort((a,b)=>a.x-b.x).map(r=>r.t.trim()).filter(Boolean).join(' '))}
+function invFields(lines){const T=lines.join('\n'),g=re=>(T.match(re)||[])[1],N=x=>x?parseFloat(x.replace(/\s/g,'').replace(',','.')):null,per=T.match(/Период на фактуриране:\s*(\d{4}-\d{2}-\d{2})\s*-\s*(\d{4}-\d{2}-\d{2})/);
+  return{num:g(/Фактура\s*№\.?:?\s*(\d+)/),date:g(/Дата:\s*(\d{4}-\d{2}-\d{2})/),from:per&&per[1],to:per&&per[2],total:N(g(/Общо с ДДС \(EUR\)\s*([\d\s.,]+?)\s*(?:\n|$)/)),vat:N(g(/(?:^|\n)ДДС \(EUR\)\s+([\d.,]+)\s*(?:\n|$)/)),sub:N(g(/Междинна сума \(EUR\)\s*([\d.,]+)/)),isBolt:/Болт/.test(T)}}
+function showInv(f){const ex=items.filter(i=>isIn(i)&&f.from&&i.date===f.from),dup=f.num&&items.some(i=>isIn(i)&&(i.note||'').includes(f.num)),bad=f.sub!=null&&f.vat!=null&&Math.abs(f.sub+f.vat-f.total)>0.03;
+  $('#ibody').innerHTML=`<p style="margin:0 0 12px"><b>Фактура № ${esc(f.num||'?')}</b> <small>от ${bgd(f.date)} · ${f.isBolt?'Болт':'<span class="out">изглежда не е от Болт</span>'}</small></p>
+<div class="f"><div><label>Период</label><div>${f.from?'Сед. '+wkNo(f.from)+' · '+sd(f.from)+' – '+bgd(f.to):'—'}</div></div><div><label>Сума с ДДС (€)</label><input id="iamt" type="number" step="0.01" value="${f.total}"></div><div><label>Получено на</label><input id="idate"></div><div><button class="p" id="isave">${dup?'Допълни данните':'Запиши като приход'}</button></div></div>
+<p style="margin:12px 0 0"><small>${f.sub!=null?'Без ДДС '+eur(f.sub)+' · ':''}${f.vat!=null?'ДДС '+eur(f.vat):''}</small></p>
+${dup?'<p class="wr"><small>⚠ Тази фактура вече е въведена. Бутонът само допълва сумата без ДДС за сравнението по седмици.</small></p>':''}${bad?'<p class="wr"><small>⚠ Сумите във фактурата не се събират – провери сумата.</small></p>':''}${ex.length&&!dup?`<p class="wr"><small>⚠ За тази седмица вече има приход от Болт (${ex.map(i=>eur(i.amt)).join(', ')}). Провери да не го броиш два пъти.</small></p>`:''}`;
+  dateInput($('#idate'));$('#idate').value=f.date||today();
+  $('#isave').onclick=()=>{if(dup){Object.assign(items.find(i=>isIn(i)&&(i.note||'').includes(f.num)),{sub:f.sub,vat:f.vat});save();render();$('#imodal').hidden=true;toast('Данните са допълнени');return}const amt=parseFloat($('#iamt').value),rd=$('#idate').value;if(!(amt>0)||!rd){toast('Попълни сума и дата');return}
+    items.push({id:Date.now().toString(36),type:'in',party:'Болт',cat:INC,amt,date:f.from||f.date,wend:f.to||'',due:'',note:'Фактура '+(f.num||''),paid:true,pdate:rd,sub:f.sub,vat:f.vat});
+    tm=rd.slice(0,7);tp=0;save();render();$('#imodal').hidden=true;toast('Записан приход от Болт: '+eur(amt))}}
+$('#ipdf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{const F=invFields(await pdfLines(await f.arrayBuffer()));if(!(F.total>0))throw 0;showInv(F);$('#imodal').hidden=false}catch(err){toast('Не успях да прочета фактурата. Въведи прихода ръчно.')}};
+$('#imodal').addEventListener('click',e=>{if(e.target.id==='imodal'||e.target.id==='imx')$('#imodal').hidden=true});
+resetForm();render();
+function csvRows(t,dl){const r=[];let row=[],f='',q=false;t=t.replace(/^\ufeff/,'');for(let k=0;k<t.length;k++){const c=t[k];if(q){if(c==='"'){if(t[k+1]==='"'){f+='"';k++}else q=false}else f+=c}else if(c==='"')q=true;else if(c===dl){row.push(f);f=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&t[k+1]==='\n')k++;row.push(f);f='';if(row.some(x=>x!==''))r.push(row);row=[]}else f+=c}row.push(f);if(row.some(x=>x!==''))r.push(row);return r}
+const wkStart=(y,w)=>{const j=new Date(y,0,4,12);j.setDate(j.getDate()-((j.getDay()+6)%7)+(w-1)*7);return iso(j)};
+$('#bimp').onclick=()=>{if(!$('#bdue').value){toast('Първо избери „Платете на“');return}$('#bcsv').click()};
+$('#bcsv').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  const t=await f.text(),fl=t.split(/\r?\n/)[0],dl=(fl.match(/;/g)||[]).length>(fl.match(/,/g)||[]).length?';':',',R=csvRows(t,dl),h=(R[0]||[]).map(x=>x.trim().toLowerCase());
+  const ix=n=>h.indexOf(n.toLowerCase()),num=(r,n)=>{const k=ix(n);return k<0?0:(parseFloat(String(r[k]).replace(/,/g,dl===';'?'.':''))||0)};
+  const iF=ix('First Name'),iL=ix('Last Name'),G='Adjusted Earnings with Courier Tips (Without VAT)';
+  if(iF<0||ix(G)<0){toast('Не разпознавам този файл');return}
+  const m=f.name.match(/(\d{4})[_-]?W(\d{1,2})/i),date=m?wkStart(+m[1],+m[2]):$('#bweek').value,dd=parseFloat($('#bded').value)||0,due=$('#bdue').value;
+  let add=0,skip=0;
+  R.slice(1).forEach((r,k)=>{const n=((r[iF]||'')+' '+(iL<0?'':r[iL]||'')).trim();if(!n)return;
+    const g=num(r,G),bd={earn:num(r,'Courier Earnings (Without VAT)'),wait:num(r,'Waiting time compensations (Without VAT)'),adj:num(r,'Courier Adjustments'),bonus:num(r,'Campaign Bonus'),tip:num(r,'Courier Tips (Without VAT)'),dep:num(r,'Deposits (Without VAT)'),cash:num(r,'Cash received from Clients'),od:num(r,'Overdue courier cash debt'),pp:num(r,'Cash paid to Providers'),b0:num(r,'Balance Before Period'),b1:num(r,'Balance After Period')};
+    const ex=items.find(i=>i.cat==='Куриер'&&i.party===n&&i.date===date);
+    if(ex){Object.assign(ex,bd);skip++;return}
+    items.push(Object.assign({id:Date.now().toString(36)+k,type:'out',party:n,cat:'Куриер',amt:Math.max(0,Math.round((g-dd)*100)/100),gross:g,ded:dd,date,wend:addD(date,6),due,note:'',paid:false,pdate:''},bd));
+    if(!couriers.includes(n))couriers.push(n);wd0.ina=(wd0.ina||[]).filter(x=>x!==n);add++});
+  DED=dd;tm=(due||date).slice(0,7);tp=0;save();render();renderBatch();toast('Седмица '+wkNo(date)+': добавени '+add+(skip?', допълнени (вече имаха запис): '+skip:''));closeM();go('cour')
+};
+$('#bk').onclick=()=>{saveFile('otchetnost-kopie-'+today()+'.json',JSON.stringify({v:1,items,couriers,DED,wolt,wd0,prof}),'application/json');try{localStorage.setItem(KEY+'.bk',Date.now())}catch(e){}render();toast('Копието е свалено')};
+$('#rs').onclick=()=>$('#rf').click();
+$('#rf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{const x=JSON.parse(await f.text()),L=norm(Array.isArray(x)?x:x.items);if(!L)throw 0;
+    const mg=(arr,add)=>{const ix=new Map(arr.map((i,k)=>[i.id,k]));add.forEach(i=>{if(ix.has(i.id))arr[ix.get(i.id)]=i;else arr.push(i)})};
+    mg(items,L);const W=Array.isArray(x.wolt)?normW(x.wolt):[];mg(wolt,W);
+    (x.couriers||[]).forEach(c=>{if(!couriers.includes(c))couriers.push(c)});if(x.DED!=null)DED=x.DED;if(x.wd0)wd0=x.wd0;if(x.prof)prof={...prof,...x.prof};
+    $('#ded').value=$('#bded').value=DED;tm=null;save();render();renderBatch();wrender();toast('Импортирани: '+L.length+' записа'+(W.length?' и '+W.length+' от WOLT':''))}catch(err){toast('Невалиден файл')}};
+function start(){if(!apiKey())return askKey();
+  if(fromCache()){theme(ui.theme||'dark');zoom(ui.zoom||'1');tm=null;uiReady=true;$('#ded').value=$('#bded').value=DED;$('#loading').hidden=true;setSync('ok');render();renderBatch();wrender();poll()}
+  else loadAll(true)}
+$('#rk').onclick=e=>{if(sure('rk',e.target,'Смени ключа?')){try{localStorage.removeItem(KK)}catch(x){}askKey()}};
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+start();
+</script></body></html>
