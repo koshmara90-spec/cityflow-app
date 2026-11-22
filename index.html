@@ -391,7 +391,7 @@ function openProf(n){const L=items.filter(i=>i.cat==='Куриер'&&i.party===n
     best=G.reduce((m,i)=>!m||i.gross>m.gross?i:m,null),pd=L.filter(i=>i.paid).reduce((a,i)=>a+i.amt,0),op=L.filter(i=>!i.paid).reduce((a,i)=>a+i.amt,0),last=G[G.length-1],ch=G.slice(-16),mx=Math.max(1,...ch.map(i=>i.gross)),
     K=(t,v,s)=>`<div><small>${t}</small><b>${v}</b>${s?`<small>${s}</small>`:''}</div>`;
   $('#pbody').innerHTML=`${profHead(n)}<div class="dg" style="max-width:none;margin-bottom:16px">${K('Седмици',G.length)}${K('Общо заработка',eur(tot))}${K('Средна седмица',eur(G.length?tot/G.length:0))}${K('Най-добра седмица',eur(best?best.gross:0),best?'Сед. '+wkNo(best.date):'')}${K('Общо бакшиши',eur(tip))}${K('Платено',eur(pd))}${K('Чака',eur(op))}${last&&last.b1<0?K('Салдо',eur(-last.b1),'дължи на Болт'):''}</div>
-<small style="color:var(--mu)">Заработка по седмици (бакшишът е в жълто)</small><div class="bars" style="height:150px;margin-top:8px">${ch.length?ch.map(i=>`<div class="bc" title="Сед. ${wkNo(i.date)}: ${eur(i.gross)}, бакшиш ${eur(i.tip||0)}"><div style="height:${Math.round(i.gross/mx*110)}px;background:var(--ac);position:relative;border-radius:3px 3px 0 0"><div style="position:absolute;bottom:0;left:0;right:0;height:${Math.round((i.tip||0)/mx*110)}px;background:var(--wr)"></div></div>${wkNo(i.date)}</div>`).join(''):'<small>Още няма данни със заработка.</small>'}</div>${pprof(n)}`;$('#pmodal').hidden=false}
+${ch.length?'<small style="color:var(--mu)">Заработка по седмици (без ДДС, с бакшиша)</small>'+vbars(ch.slice(-8).map(i=>({v:i.gross,s:Math.round(i.gross)+' €',l:'Сед. '+wkNo(i.date),t:'Сед. '+wkNo(i.date)+': '+eur(i.gross)+(i.tip?', от тях бакшиш '+eur(i.tip):'')}))):''}${pprof(n)}`;$('#pmodal').hidden=false}
 ['smodal','pmodal'].forEach(id=>$('#'+id).addEventListener('click',e=>{if(e.target.id===id||e.target.dataset.cl)$('#'+id).hidden=true}));
 let wolt=[],wd0={p:0,f:0},wedit=null;
 // представяне на куриерите: по един запис за куриер и седмица (id = седмица_номер)
@@ -495,23 +495,32 @@ function prender(){const wks=[...new Set(perf.map(p=>p.wk))].sort().reverse();
 // ---- профил на куриера: числата от Болт и графики ----
 let pmet='del';
 const PM={del:['Доставени',r=>r.del,x=>String(Math.round(x))],ar:['% приети',r=>r.ar,x=>Math.round(x)+'%'],h:['Часове онлайн',r=>r.h,x=>x.toFixed(1).replace('.',',')+' ч'],dh:['Доставки на час',r=>r.dh,x=>x.toFixed(1).replace('.',',')]};
+// малки стълбове със стойността отгоре; L = [{v, l (надпис отдолу), s (текст отгоре), t (при задържане), parts:[[стойност,цвят],...] по желание}]
+function vbars(L,H=64){const mx=Math.max(1e-9,...L.map(x=>x.v));
+  return `<div style="display:flex;align-items:flex-end;gap:6px;margin-top:6px">${L.map(x=>`<div style="flex:1;min-width:0;text-align:center;font-size:11px;color:var(--mu)" title="${x.t||''}"><div style="color:var(--tx);white-space:nowrap">${x.s}</div><div style="height:${x.v>0?Math.max(2,Math.round(x.v/mx*H)):0}px;display:flex;flex-direction:column;justify-content:flex-end;border-radius:3px 3px 0 0;overflow:hidden;margin:2px 0">${(x.parts||[[x.v,'var(--ac)']]).map(([v,c])=>`<div style="flex:${v} 0 0;background:${c}"></div>`).join('')}</div>${x.l}</div>`).join('')}</div>`}
 function pprof(n){const W=perf.filter(p=>p.name===n).sort((a,b)=>a.wk.localeCompare(b.wk));if(!W.length)return'';
   const R=W.map(prow),last=R[R.length-1],pr=R.find(r=>r.p.wk===addD(last.p.wk,-7)),f1=x=>x.toFixed(1).replace('.',',');
-  // средно за екипа през същата седмица (само тези, които са работили)
-  const T=perf.filter(p=>p.wk===last.p.wk).map(prow).filter(r=>r.h||r.del),avg=k=>T.length?T.reduce((a,r)=>a+(r[k]||0),0)/T.length:0;
-  const K=(t,v,k,fmt,st)=>`<div><small>${t}</small><b>${v}${pr&&last[k]!=null&&pr[k]!=null?arr(last[k],pr[k],st):''}</b><small>екип: ${fmt(avg(k))}</small></div>`;
-  const nums=`<div class="dg" style="max-width:none;margin:6px 0 14px">${K('Доставени',last.del,'del',x=>String(Math.round(x)),1)}${K('Доставки на час',f1(last.dh),'dh',f1,.1)}${K('% приети',last.prop?Math.round(last.ar)+'%':'—','ar',x=>Math.round(x)+'%',1)}${K('Часове онлайн',f1(last.h)+' ч','h',x=>f1(x)+' ч',.5)}${K('% време с поръчка',last.p.on?Math.round(last.ut)+'%':'—','ut',x=>Math.round(x)+'%',1)}${last.eh!=null?K('€ на час',eur(last.eh),'eh',eur,.1):''}</div>`;
-  const bar=(h,mx,lab,tip,inner)=>`<div class="bc" title="${tip}"><div style="height:${Math.round(h/mx*90)}px;background:var(--ac);position:relative;border-radius:3px 3px 0 0">${inner||''}</div>${lab}</div>`;
-  const [ml,mf,mfmt]=PM[pmet],ch=R.slice(-12),mx=Math.max(pmet==='ar'?100:1e-9,...ch.map(mf));
-  const wk=`<div class="tabs" style="margin:4px 0 0">${Object.entries(PM).map(([k,[l]])=>`<button data-pm="${k}" class="${k===pmet?'on':''}">${l}</button>`).join('')}</div>
-<div class="bars" style="height:120px;margin-top:6px">${ch.map(r=>bar(mf(r),mx,wkNo(r.p.wk),'Сед. '+wkNo(r.p.wk)+': '+mfmt(mf(r)))).join('')}</div>`;
-  // по дни от последната седмица: целият стълб е онлайн, по-тъмното отдолу е времето с поръчка
-  const D=(last.p.days||'').split(',').map(x=>x.split('/').map(Number)),dmx=Math.max(1,...D.map(x=>x[0]||0)),DN=['Пн','Вт','Ср','Чт','Пт','Сб','Нд'];
-  const days=D.length===7?`<small style="color:var(--mu)">По дни, сед. ${wkNo(last.p.wk)} (часове онлайн, отдолу по-тъмно = с поръчка)</small><div class="bars" style="height:120px;margin-top:6px">${D.map((x,i)=>bar(x[0]||0,dmx,DN[i],DN[i]+': '+f1((x[0]||0)/60)+' ч онлайн, '+f1((x[1]||0)/60)+' ч с поръчка',`<div style="position:absolute;bottom:0;left:0;right:0;height:${Math.round((x[1]||0)/dmx*90)}px;background:rgba(0,0,0,.3)"></div>`)).join('')}</div>`:'';
-  // по часове от деня, последните 4 седмици: кога обикновено работи
-  const H=Array(24).fill(0);R.slice(-4).forEach(r=>(r.p.hrs||'').split(',').forEach((v,i)=>{if(i<24)H[i]+=+v||0}));const hmx=Math.max(1,...H);
-  const hrs=H.some(Boolean)?`<small style="color:var(--mu)">Кога работи (последните 4 седмици, по часове от деня)</small><div style="display:flex;align-items:flex-end;gap:2px;height:80px;margin-top:6px">${H.map((v,i)=>`<div style="flex:1;min-width:0;text-align:center;font-size:9px;color:var(--mu)" title="${i}:00–${i+1}:00: ${f1(v/60)} ч"><div style="height:${Math.round(v/hmx*60)}px;background:var(--ac);opacity:${.35+.65*v/hmx};border-radius:2px 2px 0 0"></div>${i%3?'':i}</div>`).join('')}</div>`:'';
-  return `<h3 style="margin:18px 0 2px;font-size:16px">Представяне в Болт <small style="color:var(--mu);font-weight:400">сед. ${wkNo(last.p.wk)}${pr?', стрелките са спрямо сед. '+wkNo(pr.p.wk):''}</small></h3>${nums}${wk}<div style="margin-top:14px">${days}</div><div style="margin-top:14px">${hrs}</div>`}
+  // сравнение само с неговата предишна седмица: зелено = по-добре, червено = по-зле
+  const K=(t,v,k,fmt,st)=>{let c='';if(!pr)c='<small>няма данни за сед. '+wkNo(addD(last.p.wk,-7))+'</small>';else{const a=last[k],b=pr[k];
+      if(a==null||b==null)c='<small>—</small>';else{const d=a-b,cl=Math.abs(d)<st?'':d>0?'in':'out';
+        c=`<small>сед. ${wkNo(pr.p.wk)}: ${fmt(b)} <span class="${cl}">${cl?(d>0?'↑ +':'↓ −')+fmt(Math.abs(d)):'без промяна'}</span></small>`}}
+    return `<div><small>${t}</small><b>${v}</b>${c}</div>`};
+  const pct=x=>Math.round(x)+'%',hh=x=>f1(x)+' ч';
+  const nums=`<div class="dg" style="max-width:none;margin:6px 0 14px">${K('Доставени',last.del,'del',x=>String(Math.round(x)),1)}${K('Доставки на час',f1(last.dh),'dh',f1,.1)}${K('% приети',last.prop?pct(last.ar):'—','ar',pct,1)}${K('Часове онлайн',hh(last.h),'h',hh,.5)}${K('% време с поръчка',last.p.on?pct(last.ut):'—','ut',pct,1)}${last.eh!=null?K('€ на час',eur(last.eh),'eh',eur,.1):''}</div>`;
+  const [ml,mf,mfmt]=PM[pmet],ch=R.slice(-8);
+  const wk=`<small style="color:var(--mu)">По седмици</small><div class="tabs" style="margin:4px 0 0">${Object.entries(PM).map(([k,[l]])=>`<button data-pm="${k}" class="${k===pmet?'on':''}">${l}</button>`).join('')}</div>${vbars(ch.map(r=>({v:mf(r),s:mfmt(mf(r)),l:'Сед. '+wkNo(r.p.wk)})))}`;
+  // по дни: зелено = кара поръчка, сиво = онлайн, но чака без поръчка
+  const D=(last.p.days||'').split(',').map(x=>x.split('/').map(Number)),DN=['Пн','Вт','Ср','Чт','Пт','Сб','Нд'];
+  const days=D.length===7?`<small style="color:var(--mu)">По дни, сед. ${wkNo(last.p.wk)} – часове онлайн</small>${vbars(D.map(([o,u],i)=>{o=o||0;u=Math.min(u||0,o);return{v:o,s:o?f1(o/60):'—',l:DN[i],t:DN[i]+': '+f1(o/60)+' ч онлайн, от тях '+f1(u/60)+' ч с поръчка',parts:[[o-u,'rgba(150,150,160,.45)'],[u,'var(--ac)']]}}))}
+<div style="font-size:12px;color:var(--mu);margin-top:4px"><span style="color:var(--ac)">■</span> кара поръчка &nbsp; <span style="color:rgba(150,150,160,.7)">■</span> онлайн, но чака без поръчка</div>`:'';
+  // кога работи: часовете от последните 4 седмици, групирани по част от деня
+  const H=Array(24).fill(0);R.slice(-4).forEach(r=>(r.p.hrs||'').split(',').forEach((v,i)=>{if(i<24)H[i]+=+v||0}));const tot=H.reduce((a,b)=>a+b,0);
+  const PD=[['Сутрин','6–11 ч',6,11],['Обед','11–14 ч',11,14],['Следобед','14–18 ч',14,18],['Вечер','18–24 ч',18,24],['Нощ','0–6 ч',0,6]].map(([l,r,a,b])=>({l,r,m:H.slice(a,b).reduce((x,y)=>x+y,0)}));
+  const top=PD.reduce((a,b)=>b.m>a.m?b:a),pmx=Math.max(1,...PD.map(x=>x.m));
+  const hrs=tot?`<small style="color:var(--mu)">Кога работи (последните ${Math.min(4,R.length)} седм.)</small>
+<p style="margin:4px 0 8px">Най-много: <b>${top.l.toLowerCase()} (${top.r})</b> – ${Math.round(100*top.m/tot)}% от времето му онлайн.</p>
+${PD.map(x=>`<div style="display:grid;grid-template-columns:110px 1fr 90px;gap:8px;align-items:center;font-size:12px;margin:3px 0"><span>${x.l} <small style="color:var(--mu)">${x.r}</small></span><div style="height:10px;border-radius:5px;background:var(--bg)"><div style="height:100%;width:${Math.round(100*x.m/pmx)}%;background:var(--ac);border-radius:5px"></div></div><span style="text-align:right">${x.m?f1(x.m/60)+' ч · '+Math.round(100*x.m/tot)+'%':'—'}</span></div>`).join('')}`:'';
+  return `<h3 style="margin:18px 0 2px;font-size:16px">Представяне в Болт <small style="color:var(--mu);font-weight:400">сед. ${wkNo(last.p.wk)} · ${last.p.wk.slice(8,10)}.${last.p.wk.slice(5,7)} – ${addD(last.p.wk,6).slice(8,10)}.${addD(last.p.wk,6).slice(5,7)}</small></h3>${nums}${wk}<div style="margin-top:16px">${days}</div><div style="margin-top:16px">${hrs}</div>`}
 $('#pbody').addEventListener('click',e=>{const b=e.target.closest('[data-pm]');if(!b)return;pmet=b.dataset.pm;openProf(profN)});
 $('#pwk').onchange=e=>{pwk=e.target.value;prender()};
 $('#pcnt').onclick=e=>{const b=e.target.closest('[data-pf]');if(!b)return;pflt=b.dataset.pf===pflt?'all':b.dataset.pf;prender()};
