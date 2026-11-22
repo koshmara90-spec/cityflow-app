@@ -85,7 +85,7 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 <section class="view" id="v-inv" hidden><div id="s-inv"></div></section>
 <section class="view" id="v-hist" hidden><div id="s-hist"><div class="card" id="recs"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="margin:0">Записи</h2>
 <span style="display:flex;gap:6px"><select id="tm" style="width:auto"></select><select id="flt" style="width:auto"><option value="all">Всички</option><option value="paid">Платени</option><option value="open">Неплатени</option></select></span></div><div class="ov" id="tbl"></div><div id="pg" style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px"></div></div></div></section>
-<section class="view" id="v-perf" hidden><div class="card"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><select id="pwk" style="width:auto" aria-label="Седмица"></select><button id="pimp2">Внеси файлове от Болт</button></div><div class="pcn" id="pcnt"></div><div class="ov" id="ptab"></div><p style="margin:10px 0 0"><small>Натисни заглавие на колона, за да подредиш. Стрелките са спрямо миналата седмица. „€ на час“ = заработката от справката за седмицата ÷ часовете онлайн.</small></p></div></section>
+<section class="view" id="v-perf" hidden><div class="card"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><select id="pwk" style="width:auto" aria-label="Седмица"></select><button id="pimp2">Внеси файлове от Болт</button></div><div id="pcall"></div><div class="pcn" id="pcnt"></div><div class="ov" id="ptab"></div><p style="margin:10px 0 0"><small>Натисни заглавие на колона, за да подредиш. Стрелките са спрямо миналата седмица. „€ на час“ = заработката от справката за седмицата ÷ часовете онлайн.</small></p></div></section>
 <section class="view" id="v-week" hidden><div class="card"><h2>Седмичен резултат</h2><div class="ov" id="wkt"></div><p style="margin:12px 0 0"><small>Резултат = фактура от Болт (с ДДС) − куриери (за плащане) − други разходи. „Сравнение“ сверява сумата без ДДС от фактурата със заработките на куриерите (без ДДС).</small></p></div></section>
 <section class="view" id="v-wolt" hidden><p style="color:var(--mu);margin:0 0 14px">Лични сметки за Wolt. Всичко тук е отделно и не влияе на останалите раздели.</p>
 <div class="card"><h2 id="wft">Нов запис</h2><div class="f">
@@ -474,12 +474,30 @@ function prow(p){const h=(p.on||0)/60,e=items.find(i=>i.cat==='Куриер'&&i.
   return{p,name:p.name,del:p.del||0,prop:p.prop||0,ar:p.prop?100*(p.acc||0)/p.prop:0,h,dh:h?(p.del||0)/h:0,ut:p.on?100*(p.use||0)/p.on:0,eh:e&&h?(+e.gross||0)/h:null}}
 // стрелка спрямо миналата седмица: ↑ зелено, ↓ червено, нищо при същото или без данни
 function arr(a,b,k){if(b==null||!isFinite(b))return'';const d=a-b;if(Math.abs(d)<k)return'';return '<span class="'+(d>0?'in">↑':'out">↓')+'</span>'}
+// ---- „За обаждане“: кой има нужда от разговор, защо и какво да му кажеш ----
+// R = редовете за седмицата, P = неговите редове от предишната седмица (по номер)
+function pcall(R,P){const f1=x=>x.toFixed(1).replace('.',','),W=R.filter(r=>r.h>=1),tdh=W.length?W.reduce((a,r)=>a+r.dh,0)/W.length:0,out=[];
+  R.forEach(r=>{const o=P[r.p.uid],why=[],tip=[];
+    if(o&&o.h>=3&&r.h<.5&&!r.del){why.push('Не е работил тази седмица (миналата: '+f1(o.h)+' ч)');tip.push('Попитай дали всичко е наред и кога ще излезе пак.')}
+    if(r.prop>=10&&r.ar<70){why.push('Приема само '+Math.round(r.ar)+'% от поръчките ('+(r.p.acc||0)+' от '+r.prop+')');tip.push('Попитай защо отказва – далечни адреси, неудобни ресторанти, неудобни часове? Честите откази може да намалят поръчките, които получава.')}
+    if(o&&o.del>=10&&r.del<o.del*.7&&r.del>0){why.push('Доставените паднаха с '+Math.round(100*(1-r.del/o.del))+'% (от '+o.del+' на '+r.del+')');tip.push(r.h<o.h*.8?'Карал е по-малко часове ('+f1(r.h)+' ч при '+f1(o.h)+' ч). Попитай дали може да излиза повече.':'Карал е горе-долу толкова часове, но е взел по-малко поръчки. Попитай какво се е променило.')}
+    if(r.h>=5&&r.p.on&&r.ut<60){why.push('Само '+Math.round(r.ut)+'% от времето онлайн е с поръчка');tip.push('Чака много без поръчка. Предложи му да излиза в най-натоварените часове или да чака по-близо до ресторантите.')}
+    if(r.h>=5&&tdh&&r.dh<tdh*.7){why.push('Прави '+f1(r.dh)+' доставки на час, а средно за екипа е '+f1(tdh));tip.push('Провери къде губи време – маршрут, превозно средство, дълго чакане в ресторантите.')}
+    if(why.length)out.push({r,why,tip})});
+  return out.sort((a,b)=>b.why.length-a.why.length||a.r.name.localeCompare(b.r.name,'bg'))}
+function callHtml(L){if(!L.length)return'<div class="card" style="margin:0 0 12px;background:var(--bg)"><b class="in">✓ Няма нужда от обаждания за тази седмица</b></div>';
+  const C=wd0.calls||{},done=x=>C[x.r.name]&&C[x.r.name]>=pwk,dm=d=>d.slice(8,10)+'.'+d.slice(5,7);
+  L=[...L.filter(x=>!done(x)),...L.filter(done)];
+  return `<div class="card" style="margin:0 0 12px;background:var(--bg)"><h2 style="margin:0 0 8px">📞 За обаждане <small>(${L.filter(x=>!done(x)).length})</small></h2>${L.map(x=>{const d=done(x);
+    return `<div style="border-top:1px solid var(--bd);padding:10px 0;${d?'opacity:.5':''}"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><button class="lk" data-prof="${esc(x.r.name)}" style="font-weight:700">${av(x.r.name,24)} ${esc(x.r.name)}</button><button data-called="${esc(x.r.name)}" style="flex:none;font-size:12px;padding:4px 10px">${d?'✓ Обадено '+dm(C[x.r.name]):'Обадих се'}</button></div>`
+      +x.why.map((w,i)=>`<div style="margin:6px 0 0 31px;font-size:13px"><span class="wr">⚠ ${esc(w)}</span><br><small style="color:var(--mu)">💬 ${esc(x.tip[i])}</small></div>`).join('')+'</div>'}).join('')}</div>`}
 function prender(){const wks=[...new Set(perf.map(p=>p.wk))].sort().reverse();
   if(!wks.includes(pwk))pwk=wks[0]||null;
   const dm=d=>d.slice(8,10)+'.'+d.slice(5,7);
   $('#pwk').innerHTML=wks.length?wks.map(w=>`<option value="${w}"${w===pwk?' selected':''}>Сед. ${wkNo(w)} · ${dm(w)} – ${dm(addD(w,6))}.${addD(w,6).slice(0,4)}</option>`).join(''):'<option>Няма данни</option>';
-  if(!pwk){$('#pcnt').innerHTML='';$('#ptab').innerHTML='<small>Още няма данни. Натисни „Внеси файлове от Болт“ и избери файловете с поръчките и часовете (courier_orders… и courier_activity_periods…).</small>';return}
+  if(!pwk){$('#pcnt').innerHTML=$('#pcall').innerHTML='';$('#ptab').innerHTML='<small>Още няма данни. Натисни „Внеси файлове от Болт“ и избери файловете с поръчките и часовете (courier_orders… и courier_activity_periods…).</small>';return}
   const pw=addD(pwk,-7),R=perf.filter(p=>p.wk===pwk).map(prow),P=Object.fromEntries(perf.filter(p=>p.wk===pw).map(p=>[p.uid,prow(p)]));
+  $('#pcall').innerHTML=callHtml(pcall(R,P));
   $('#pcnt').innerHTML=Object.entries(PF).map(([k,[l,f]])=>`<button data-pf="${k}" class="${k===pflt?'on':''}">${l}<b>${R.filter(f).length}</b></button>`).join('');
   const L=R.filter(PF[pflt][1]).sort((a,b)=>psort==='name'?pdir*a.name.localeCompare(b.name,'bg'):pdir*((a[psort]??-1)-(b[psort]??-1)));
   const C=[['name','Куриер'],['del','Доставени'],['dh','Доставки на час'],['ar','% приети'],['prop','Предложени'],['h','Часове онлайн'],['ut','% време с поръчка'],['eh','€ на час']];
@@ -522,10 +540,11 @@ function pprof(n){const W=perf.filter(p=>p.name===n).sort((a,b)=>a.wk.localeComp
 ${PD.map(x=>`<div style="display:grid;grid-template-columns:110px 1fr 90px;gap:8px;align-items:center;font-size:12px;margin:3px 0"><span>${x.l} <small style="color:var(--mu)">${x.r}</small></span><div style="height:10px;border-radius:5px;background:var(--bg)"><div style="height:100%;width:${Math.round(100*x.m/pmx)}%;background:var(--ac);border-radius:5px"></div></div><span style="text-align:right">${x.m?f1(x.m/60)+' ч · '+Math.round(100*x.m/tot)+'%':'—'}</span></div>`).join('')}`:'';
   return `<h3 style="margin:18px 0 2px;font-size:16px">Представяне в Болт <small style="color:var(--mu);font-weight:400">сед. ${wkNo(last.p.wk)} · ${last.p.wk.slice(8,10)}.${last.p.wk.slice(5,7)} – ${addD(last.p.wk,6).slice(8,10)}.${addD(last.p.wk,6).slice(5,7)}</small></h3>${nums}${wk}<div style="margin-top:16px">${days}</div><div style="margin-top:16px">${hrs}</div>`}
 $('#pbody').addEventListener('click',e=>{const b=e.target.closest('[data-pm]');if(!b)return;pmet=b.dataset.pm;openProf(profN)});
+$('#pcall').addEventListener('click',e=>{const b=e.target.closest('[data-called]');if(!b)return;const n=b.dataset.called,C={...(wd0.calls||{})};if(C[n]&&C[n]>=pwk)delete C[n];else C[n]=today();wd0={...wd0,calls:C};save();prender()});
 $('#pwk').onchange=e=>{pwk=e.target.value;prender()};
 $('#pcnt').onclick=e=>{const b=e.target.closest('[data-pf]');if(!b)return;pflt=b.dataset.pf===pflt?'all':b.dataset.pf;prender()};
 $('#ptab').addEventListener('click',e=>{const t=e.target.closest('th[data-s]');if(!t)return;const k=t.dataset.s;if(psort===k)pdir=-pdir;else{psort=k;pdir=k==='name'?1:-1}prender()});
-$('#pcsv').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;const out=[];for(const f of fs)out.push(await perfImport(f));save();render();toast(out.join(' · '),6000)};
+$('#pcsv').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;const out=[];for(const f of fs)out.push(await perfImport(f));save();render();const ok=out.filter(x=>x.startsWith('Сед.')),bad=out.filter(x=>!x.startsWith('Сед.')),wk=[...new Set(ok.map(x=>x.match(/\d+/)[0]))].sort((a,b)=>a-b);toast([ok.length>2?'Внесени '+ok.length+' файла за сед. '+wk.join(', '):ok.join(' · '),...bad].filter(Boolean).join(' · '),6000)};
 // чете файла на Болт с поръчките (courier_orders) или с часовете онлайн (courier_activity_periods).
 // Телефон и имейл не се четат. Повторен импорт на същия файл замества числата, не ги събира.
 async function perfImport(f){
