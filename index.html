@@ -85,7 +85,7 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 <section class="view" id="v-inv" hidden><div id="s-inv"></div></section>
 <section class="view" id="v-hist" hidden><div id="s-hist"><div class="card" id="recs"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="margin:0">Записи</h2>
 <span style="display:flex;gap:6px"><select id="tm" style="width:auto"></select><select id="flt" style="width:auto"><option value="all">Всички</option><option value="paid">Платени</option><option value="open">Неплатени</option></select></span></div><div class="ov" id="tbl"></div><div id="pg" style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px"></div></div></div></section>
-<section class="view" id="v-perf" hidden><div class="card"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><select id="pwk" style="width:auto" aria-label="Седмица"></select><button id="pimp2">Внеси файлове от Болт</button></div><div id="pcall"></div><div class="pcn" id="pcnt"></div><div class="ov" id="ptab"></div><p style="margin:10px 0 0"><small>Натисни заглавие на колона, за да подредиш. Стрелките са спрямо миналата седмица. „€ на час“ = заработката от справката за седмицата ÷ часовете онлайн.</small></p></div></section>
+<section class="view" id="v-perf" hidden><div class="card"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><select id="pwk" style="width:auto" aria-label="Седмица"></select><button id="pimp2">Внеси файлове от Болт</button></div><div id="pcall"></div><div id="pan"></div><div class="pcn" id="pcnt"></div><div class="ov" id="ptab"></div><p style="margin:10px 0 0"><small>Натисни заглавие на колона, за да подредиш. Стрелките са спрямо миналата седмица. „€ на час“ = заработката от справката за седмицата ÷ часовете онлайн.</small></p></div></section>
 <section class="view" id="v-week" hidden><div class="card"><h2>Седмичен резултат</h2><div class="ov" id="wkt"></div><p style="margin:12px 0 0"><small>Резултат = фактура от Болт (с ДДС) − куриери (за плащане) − други разходи. „Сравнение“ сверява сумата без ДДС от фактурата със заработките на куриерите (без ДДС).</small></p></div></section>
 <section class="view" id="v-wolt" hidden><p style="color:var(--mu);margin:0 0 14px">Лични сметки за Wolt. Всичко тук е отделно и не влияе на останалите раздели.</p>
 <div class="card"><h2 id="wft">Нов запис</h2><div class="f">
@@ -498,13 +498,73 @@ function callHtml(L){if(!L.length)return'<div class="card" style="margin:0 0 12p
   return `<div class="card" style="margin:0 0 12px;background:var(--bg)"><h2 style="margin:0 0 8px">📞 За обаждане <small>(${L.filter(x=>!done(x)).length})</small></h2>${L.map(x=>{const d=done(x);
     return `<div style="border-top:1px solid var(--bd);padding:10px 0;${d?'opacity:.5':''}"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><button class="lk" data-prof="${esc(x.r.name)}" style="font-weight:700">${av(x.r.name,24)} ${esc(x.r.name)}</button><button data-called="${esc(x.r.name)}" style="flex:none;font-size:12px;padding:4px 10px">${d?'✓ Обадено '+dm(C[x.r.name]):'Обадих се'}</button></div>`
       +x.why.map((w,i)=>`<div style="margin:6px 0 0 31px;font-size:13px"><span class="wr">⚠ ${esc(w)}</span><br><small style="color:var(--mu)">💬 ${esc(x.tip[i])}</small></div>`).join('')+'</div>'}).join('')}</div>`}
+// ---- анализ на седмицата: защо са се променили доставките, тенденции, навици ----
+// Доставени = часове онлайн × предложени на час × % приети × % завършени.
+// Промяната в доставените се разпределя между четирите части според това колко се е променила всяка (логаритмично).
+const PODS=[['сутрин','6–11 ч',6,11],['обед','11–14 ч',11,14],['следобед','14–18 ч',14,18],['вечер','18–24 ч',18,24],['нощ','0–6 ч',0,6]];
+function pod(hs){const H=(hs||'').split(',').map(Number);return PODS.map(([,,a,b])=>H.slice(a,b).reduce((x,y)=>x+(y||0),0))}
+const topPod=m=>{const t=m.reduce((a,b)=>a+b,0);if(!t)return null;const i=m.indexOf(Math.max(...m));return{i,sh:m[i]/t}};
+function phist(uid,wk){return perf.filter(p=>p.uid===uid&&p.wk<wk).sort((a,b)=>b.wk.localeCompare(a.wk)).map(prow)}
+function anC(r,wk){const f1=x=>x.toFixed(1).replace('.',','),pc=x=>Math.round(x)+'%',H=phist(r.p.uid,wk),o=H[0]&&H[0].p.wk===addD(wk,-7)?H[0]:null,
+    B=H.slice(0,4).filter(x=>x.h>=1),avg=k=>B.reduce((a,x)=>a+x[k],0)/B.length,pts=[],t=TH();
+  const worked=x=>x&&(x.h>=.5||x.del>0);
+  if(!worked(r))return{tone:'off',head:o&&worked(o)?'Не е работил тази седмица (миналата: '+o.del+' доставки, '+f1(o.h)+' ч)':'Не е работил тази седмица',pts};
+  if(!H.some(worked))return{tone:'new',head:'Първа седмица с данни: '+r.del+' доставки за '+f1(r.h)+' ч',pts:[r.prop?'Приема '+pc(r.ar)+' от предложените поръчки.':'']};
+  if(!worked(o))pts.push('Връща се след пауза – предишната седмица не е работил.');
+  let head='',tone='flat';
+  if(worked(o)){const d=r.del-o.del,dp=o.del?Math.round(100*d/o.del):0;
+    tone=Math.abs(d)<2||Math.abs(dp)<5?'flat':d>0?'up':'down';
+    head=r.del+' доставки, '+(tone==='flat'?'почти колкото миналата седмица ('+o.del+')':(d>0?'с '+d+' повече':'с '+(-d)+' по-малко')+' ('+(d>0?'+':'')+dp+'%)');
+    // разлагане на причините
+    const acc=x=>x.p.acc||0,ok=[r,o].every(x=>x.del>0&&x.h>0&&x.prop>0&&acc(x)>0);
+    if(ok&&tone!=='flat'){const F=[['h',r.h,o.h],['oph',r.prop/r.h,o.prop/o.h],['ar',acc(r)/r.prop,acc(o)/o.prop],['cr',r.del/acc(r),o.del/acc(o)]],L=Math.log(r.del/o.del);
+      const C=F.map(([k,a,b])=>({k,a,b,c:d*Math.log(a/b)/L})).filter(x=>Math.abs(x.c)>=1).sort((x,y)=>Math.abs(y.c)-Math.abs(x.c));
+      const TX={h:(a,b)=>(a>b?'Повече часове':'По-малко часове')+' онлайн: '+f1(a)+' ч при '+f1(b)+' ч',
+        oph:(a,b)=>(a>b?'Повече':'По-малко')+' предложени поръчки на час: '+f1(a)+' при '+f1(b)+(a<b?' – по-слабо търсене в часовете или зоната, в които кара':''),
+        ar:(a,b)=>(a>b?'Приема повече':'Приема по-малко')+': '+pc(100*a)+' при '+pc(100*b),
+        cr:(a,b)=>(a>b?'Завършва повече':'Завършва по-малко')+' от приетите: '+pc(100*a)+' при '+pc(100*b)};
+      C.forEach(x=>pts.push(TX[x.k](x.a,x.b)+' → около '+(x.c>0?'+':'−')+Math.round(Math.abs(x.c))+' доставки.'));
+      const m=C[0];if(m){const same=Math.sign(m.c)===Math.sign(d);
+        if(tone==='down'&&same)pts.push('👉 '+({h:'Не е карал по-зле, а по-малко. Попитай дали може да излиза повече часове'+(()=>{const tp=topPod(pod(r.p.hrs));return tp?', например '+PODS[tp.i][0]+' ('+PODS[tp.i][1]+'), когато кара най-много.':'.'})(),
+          oph:'Самият той не е виновен – получавал е по-малко предложения на час. Предложи му да кара в по-натоварени часове или да чака по-близо до ресторантите.',
+          ar:'Отказва повече поръчки. Попитай защо – далечни адреси, неудобни ресторанти?',cr:'Има приети, но недоставени поръчки. Попитай какво се е случило.'})[m.k]);
+        if(tone==='up'&&same)pts.push('👉 Браво – '+({h:'кара повече часове.',oph:'получава повече предложения на час.',ar:'приема повече поръчки.',cr:'завършва всичко, което приеме.'})[m.k])}}}
+  else head=r.del+' доставки за '+f1(r.h)+' ч';
+  // сравнение с обичайното за него (последните до 4 седмици, в които е работил)
+  if(B.length>=2){const bd=avg('del'),bu=avg('ut');
+    if(r.del<bd*.7)pts.push('Под обичайното за него: средно '+Math.round(bd)+' доставки за последните '+B.length+' седмици.');
+    else if(r.del>bd*1.2)pts.push('Над обичайното за него: средно '+Math.round(bd)+' доставки за последните '+B.length+' седмици.');
+    if(r.p.on&&bu-r.ut>=10)pts.push('Повече време без поръчка: '+pc(100-r.ut)+' от времето онлайн при обичайно '+pc(100-bu)+'.');
+    // смяна на навиците: в коя част от деня кара
+    const cp=topPod(pod(r.p.hrs)),bm=PODS.map((_,i)=>B.reduce((a,x)=>a+pod(x.p.hrs)[i],0)),bp=topPod(bm);
+    if(cp&&bp&&cp.i!==bp.i&&cp.sh>=.4)pts.push('Смяна на часовете: тази седмица кара предимно '+PODS[cp.i][0]+' ('+PODS[cp.i][1]+'), обикновено '+PODS[bp.i][0]+'.')}
+  // тенденции: поредица от седмици
+  const S=[r,...H.filter(worked)].slice(0,6),run=(f)=>{let n=0;for(let i=0;i+1<S.length&&S[i].p.wk===addD(S[i+1].p.wk,7)&&f(S[i],S[i+1]);i++)n++;return n};
+  const dn=run((a,b)=>a.del<b.del),up=run((a,b)=>a.del>b.del);
+  const ord=n=>n+(n===2?'-ра':n===7||n===8?'-ма':'-та');if(dn>=2)pts.push('📉 '+ord(dn)+' поредна седмица с по-малко доставки.');
+  if(up>=2)pts.push('📈 '+ord(up)+' поредна седмица с повече доставки.');
+  let hi=0;for(const x of S){if(x.prop>0&&x.ar>=t.high)hi++;else break}
+  if(hi>=3)pts.push('⭐ '+hi+' седмици подред приема над '+t.high+'%.');
+  return{tone,head,pts:pts.filter(Boolean)}}
+function anHtml(wk){const R=perf.filter(p=>p.wk===wk).map(prow),P=perf.filter(p=>p.wk===addD(wk,-7)).map(prow),w=R.filter(r=>r.h>=.5||r.del>0);if(!R.length)return'';
+  const sum=(L,k)=>L.reduce((a,x)=>a+(x[k]||0),0),f1=x=>x.toFixed(1).replace('.',','),A=R.map(r=>({r,a:anC(r,wk)}));
+  let team=`Работили: <b>${w.length}</b> от ${R.length} · доставки: <b>${sum(R,'del')}</b> · часове онлайн: <b>${f1(sum(R,'h'))}</b>`;
+  if(P.length){const d=sum(R,'del')-sum(P,'del');team+=` <span class="${d>0?'in':d<0?'out':''}">(${d>0?'+':''}${d} доставки спрямо сед. ${wkNo(addD(wk,-7))})</span>`}
+  const up=A.filter(x=>x.a.tone==='up').map(x=>({x,d:x.r.del-(P.find(p=>p.p.uid===x.r.p.uid)||{}).del})).sort((a,b)=>b.d-a.d)[0];
+  const best=[...w].sort((a,b)=>b.dh-a.dh)[0];
+  const praise=[up?`📈 Най-голям напредък: <b>${esc(up.x.r.name)}</b> (+${up.d} доставки)`:'',best&&best.h>=3?`⚡ Най-бърз: <b>${esc(best.name)}</b> (${f1(best.dh)} доставки на час)`:''].filter(Boolean);
+  const IC2={up:'<span class="in">▲</span>',down:'<span class="out">▼</span>',flat:'<span style="color:var(--mu)">●</span>',new:'🆕',off:'<span style="color:var(--mu)">○</span>'};
+  A.sort((a,b)=>b.r.del-a.r.del);
+  return `<div class="card" style="margin:0 0 12px;background:var(--bg)"><h2 style="margin:0 0 6px">🧠 Анализ на седмицата</h2><p style="margin:0 0 4px;font-size:13px">${team}</p>${praise.map(x=>`<p style="margin:2px 0;font-size:13px">${x}</p>`).join('')}
+${A.map(({r,a})=>`<details class="an" style="border-top:1px solid var(--bd);padding:8px 0"><summary style="cursor:pointer;font-size:13px">${IC2[a.tone]} <b>${esc(r.name)}</b> – ${esc(a.head)}</summary>${a.pts.length?`<ul style="margin:6px 0 0 18px;padding:0;font-size:13px">${a.pts.map(x=>`<li style="margin:3px 0">${esc(x)}</li>`).join('')}</ul>`:''}<button class="lk" data-prof="${esc(r.name)}" style="font-size:12px;margin:6px 0 0 18px">Профил →</button></details>`).join('')}
+<p style="margin:8px 0 0"><small>Натисни име, за да видиш защо. Колкото повече седмици внесеш, толкова по-точен е анализът (тенденции и „обичайното за него“ искат поне 3 седмици).</small></p></div>`}
 function prender(){const wks=[...new Set(perf.map(p=>p.wk))].sort().reverse();
   if(!wks.includes(pwk))pwk=wks[0]||null;
   const dm=d=>d.slice(8,10)+'.'+d.slice(5,7);
   $('#pwk').innerHTML=wks.length?wks.map(w=>`<option value="${w}"${w===pwk?' selected':''}>Сед. ${wkNo(w)} · ${dm(w)} – ${dm(addD(w,6))}.${addD(w,6).slice(0,4)}</option>`).join(''):'<option>Няма данни</option>';
-  if(!pwk){$('#pcnt').innerHTML=$('#pcall').innerHTML='';$('#ptab').innerHTML='<small>Още няма данни. Натисни „Внеси файлове от Болт“ и избери файловете с поръчките и часовете (courier_orders… и courier_activity_periods…).</small>';return}
+  if(!pwk){$('#pcnt').innerHTML=$('#pcall').innerHTML=$('#pan').innerHTML='';$('#ptab').innerHTML='<small>Още няма данни. Натисни „Внеси файлове от Болт“ и избери файловете с поръчките и часовете (courier_orders… и courier_activity_periods…).</small>';return}
   const pw=addD(pwk,-7),R=perf.filter(p=>p.wk===pwk).map(prow),P=Object.fromEntries(perf.filter(p=>p.wk===pw).map(p=>[p.uid,prow(p)]));
-  $('#pcall').innerHTML=callHtml(pcall(R,P));
+  $('#pcall').innerHTML=callHtml(pcall(R,P));$('#pan').innerHTML=anHtml(pwk);
   $('#pcnt').innerHTML=Object.entries(PF).map(([k,[l,f]])=>`<button data-pf="${k}" class="${k===pflt?'on':''}">${l()}<b>${R.filter(f).length}</b></button>`).join('');
   const L=R.filter(PF[pflt][1]).sort((a,b)=>psort==='name'?pdir*a.name.localeCompare(b.name,'bg'):pdir*((a[psort]??-1)-(b[psort]??-1)));
   const C=[['name','Куриер'],['del','Доставени'],['dh','Доставки на час'],['ar','% приети'],['prop','Предложени'],['h','Часове онлайн'],['ut','% време с поръчка'],['eh','€ на час']];
@@ -545,7 +605,7 @@ function pprof(n){const W=perf.filter(p=>p.name===n).sort((a,b)=>a.wk.localeComp
   const hrs=tot?`<small style="color:var(--mu)">Кога работи (последните ${Math.min(4,R.length)} седм.)</small>
 <p style="margin:4px 0 8px">Най-много: <b>${top.l.toLowerCase()} (${top.r})</b> – ${Math.round(100*top.m/tot)}% от времето му онлайн.</p>
 ${PD.map(x=>`<div style="display:grid;grid-template-columns:110px 1fr 90px;gap:8px;align-items:center;font-size:12px;margin:3px 0"><span>${x.l} <small style="color:var(--mu)">${x.r}</small></span><div style="height:10px;border-radius:5px;background:var(--bg)"><div style="height:100%;width:${Math.round(100*x.m/pmx)}%;background:var(--ac);border-radius:5px"></div></div><span style="text-align:right">${x.m?f1(x.m/60)+' ч · '+Math.round(100*x.m/tot)+'%':'—'}</span></div>`).join('')}`:'';
-  return `<h3 style="margin:18px 0 2px;font-size:16px">Представяне в Болт <small style="color:var(--mu);font-weight:400">сед. ${wkNo(last.p.wk)} · ${last.p.wk.slice(8,10)}.${last.p.wk.slice(5,7)} – ${addD(last.p.wk,6).slice(8,10)}.${addD(last.p.wk,6).slice(5,7)}</small></h3>${nums}${wk}<div style="margin-top:16px">${days}</div><div style="margin-top:16px">${hrs}</div>`}
+  return `<h3 style="margin:18px 0 2px;font-size:16px">Представяне в Болт <small style="color:var(--mu);font-weight:400">сед. ${wkNo(last.p.wk)} · ${last.p.wk.slice(8,10)}.${last.p.wk.slice(5,7)} – ${addD(last.p.wk,6).slice(8,10)}.${addD(last.p.wk,6).slice(5,7)}</small></h3>${(()=>{const a=anC(last,last.p.wk);return a.pts.length?`<ul style="margin:6px 0 10px 18px;padding:0;font-size:13px"><li><b>${esc(a.head)}</b></li>${a.pts.map(x=>`<li style="margin:3px 0">${esc(x)}</li>`).join("")}</ul>`:""})()}${nums}${wk}<div style="margin-top:16px">${days}</div><div style="margin-top:16px">${hrs}</div>`}
 $('#pbody').addEventListener('click',e=>{const b=e.target.closest('[data-pm]');if(!b)return;pmet=b.dataset.pm;openProf(profN)});
 $('#pcall').addEventListener('click',e=>{const b=e.target.closest('[data-called]');if(!b)return;const n=b.dataset.called,C={...(wd0.calls||{})};if(C[n]&&C[n]>=pwk)delete C[n];else C[n]=today();wd0={...wd0,calls:C};save();prender()});
 $('#pwk').onchange=e=>{pwk=e.target.value;prender()};
