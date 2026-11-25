@@ -1,6 +1,6 @@
 // Пази файловете на приложението на устройството, за да се отваря и без интернет.
 // Версията се сменя автоматично при всяко сглобяване (build.js), за да идват новите версии.
-const V = 'cityflow-795c096874';
+const V = 'cityflow-610434abc2';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(V).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
