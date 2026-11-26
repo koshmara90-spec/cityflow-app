@@ -406,7 +406,7 @@ let perf=[];
 // нови кандидати (отделни от всичко останало)
 let cand=[],cflt='all',cq='',cedit=null;const normC=a=>Array.isArray(a)?a.filter(i=>i&&i.id).map(i=>({...i})):[];
 const CST=['Нов','Чака документи','Документи готови','Не вдига','Започна','Отказа се'],CSC={'Нов':'var(--ac)','Чака документи':'var(--wr)','Документи готови':'var(--in)','Не вдига':'var(--mu)','Започна':'var(--in)','Отказа се':'var(--out)'};
-const CF=[['date','Дата на контакт','date'],['name','Име'],['phone','Телефон','tel'],['status','Статус'],['src','Откъде е дошъл'],['veh','С какво ще кара'],['city','Град / зона']],CP=[['egn','ЕГН'],['idn','Лична карта №'],['addr','Адрес'],['iban','IBAN']];
+const CF=[['date','Дата на контакт','date'],['name','Име'],['phone','Телефон','tel'],['status','Статус'],['src','Откъде е дошъл'],['veh','С какво ще кара'],['city','Град / зона']],CP=[['idt','ЕГН или ЛН (чужденец)'],['egn','ЕГН / ЛН'],['idn','Лична карта №'],['iss','Издадена от'],['idd','Дата на издаване','date'],['addr','Адрес'],['email','Имейл','email'],['iban','IBAN']],CCAR=[['car','Марка и модел'],['reg','Рег. номер'],['year','Година'],['fuel','Гориво']],CD=[['cno','Номер на договор'],['ddate','Дата на документите','date']];
 let pwk=null,psort='del',pdir=-1,pflt='all';
 const THD={low:70,high:90,few:10,drop:30,ut:60,slow:30,off:3},THL={low:['Нисък % приемане – под (%)',1,100],high:['Висок % приемане – от (%)',1,100],few:['Малко часове онлайн – под (ч)',1,80],drop:['Спад на доставените – над (%)',5,100],ut:['Време с поръчка – под (%)',1,100],slow:['Доставки на час под средното за екипа – с над (%)',5,100],off:['„Не е работил“, ако предишната седмица е бил поне (ч)',1,80]};
 const TH=()=>({...THD,...(wd0.th||{})});
@@ -627,24 +627,38 @@ function crender(){const n=s=>cand.filter(c=>c.status===s).length;
 <select data-cst="${esc(c.id)}" aria-label="Статус" style="width:auto;max-width:170px;font-size:13px;color:${CSC[c.status]||'var(--tx)'}">${CST.map(s=>`<option${s===c.status?' selected':''}>${s}</option>`).join('')}</select></div>`).join('')
     :`<small>${cand.length?'Няма кандидати с този филтър.':'Още няма кандидати. Натисни „+ Нов кандидат“.'}</small>`}
 function cform(c){cedit=c?c.id:null;c=c||{date:today(),status:'Нов'};
-  const inp=([k,l,t])=>`<div><label>${l}</label>${k==='status'?`<select data-cf2="status">${CST.map(s=>`<option${s===c.status?' selected':''}>${s}</option>`).join('')}</select>`
-    :`<input data-cf2="${k}" type="${t||'text'}" value="${esc(c[k]||'')}"${k==='src'?' list="csrc"':k==='veh'?' list="cveh"':''}>`}</div>`;
+  const SEL={status:CST,idt:['ЕГН','ЛН']},DL={src:'csrc',veh:'cveh',fuel:'cfuel'},PH={iss:'МВР/MOL BGR',cno:'следващ: '+cnoNext(),year:'по избор',ddate:''};
+  const inp=([k,l,t])=>`<div><label>${l}</label>${SEL[k]?`<select data-cf2="${k}">${SEL[k].map(s=>`<option${s===(c[k]||SEL[k][0])?' selected':''}>${s}</option>`).join('')}</select>`
+    :`<input data-cf2="${k}" type="${t||'text'}" value="${esc(c[k]||'')}"${DL[k]?' list="'+DL[k]+'"':''}${PH[k]?' placeholder="'+esc(PH[k])+'"':''}>`}</div>`;
+  const grp=(t,L,o)=>`<details style="margin:12px 0"${o||L.some(([k])=>c[k]&&k!=='idt')?' open':''}><summary style="cursor:pointer;font-size:13px;font-weight:600">${t}</summary><div class="f" style="margin-top:8px">${L.map(inp).join('')}</div></details>`;
   $('#cbody').innerHTML=`<h2>${cedit?'Кандидат':'Нов кандидат'}</h2><div class="f">${CF.map(inp).join('')}</div>
-<datalist id="csrc"><option>Обява</option><option>Препоръка</option><option>Facebook</option><option>Друго</option></datalist><datalist id="cveh"><option>Колело</option><option>Тротинетка</option><option>Мотор</option><option>Кола</option></datalist>
-<details style="margin:12px 0"${CP.some(([k])=>c[k])?' open':''}><summary style="cursor:pointer;font-size:13px">Лични данни за договор</summary><div class="f" style="margin-top:8px">${CP.map(inp).join('')}</div></details>
+<datalist id="csrc"><option>Обява</option><option>Препоръка</option><option>Facebook</option><option>Друго</option></datalist><datalist id="cveh"><option>Колело</option><option>Тротинетка</option><option>Мотор</option><option>Кола</option></datalist><datalist id="cfuel"><option>бензин</option><option>дизел</option><option>газ</option></datalist>
+${grp('Лични данни за договора',CP)}${grp('Кола за договора за наем',CCAR)}${grp('Договор',CD)}
 <div><label>Бележка</label><textarea data-cf2="note" rows="3" style="font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:7px;padding:7px 9px;width:100%;box-sizing:border-box">${esc(c.note||'')}</textarea></div>
-<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="p" id="csave">Запази</button>${cedit?'<button id="cdel" style="color:var(--out)">Изтрий</button>':''}</div>`;
+<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="p" id="csave">Запази</button><button id="ccopy">📋 Копирай за документите</button>${cedit?'<button id="cdel" style="color:var(--out)">Изтрий</button>':''}</div>
+<p style="margin:8px 0 0"><small>„Копирай за документите“ запазва кандидата и копира данните като текст. Постави го в чата за договорите.</small></p>`;
   $('#cmodal').hidden=false;$('[data-cf2=name]').focus()}
+// следващ номер на договор: последният даден извън приложението е 006
+function cnoNext(){const m=Math.max(6,...cand.map(c=>parseInt(String(c.cno||'').replace(/\D/g,''),10)||0));return String(m+1).padStart(3,'0')}
+function cread(){const o={};document.querySelectorAll('#cbody [data-cf2]').forEach(i=>{const v=i.value.trim();if(v)o[i.dataset.cf2]=v});if(o.iban)o.iban=o.iban.replace(/\s+/g,'').toUpperCase();if(o.idt==='ЕГН')delete o.idt;return o}
+function cput(o){const i=cand.findIndex(c=>c.id===cedit),rec={id:cedit||'c'+Date.now().toString(36),...o};if(i>=0)cand[i]=rec;else cand.push(rec);cedit=rec.id;save();crender();return rec}
+function ctext(c){const L=c.idt||'ЕГН',car=[c.car,c.reg?'рег. № '+c.reg:'',c.year?c.year+' г.':'година – няма',c.fuel].filter(Boolean).join(', ');
+  return['Данни за нов куриер (за договора, договора за наем, протокола и декларациите):','Име: '+(c.name||''),L+': '+(c.egn||''),(L==='ЛН'?'Чужденец: да':''),'Л.к. №: '+(c.idn||''),'Издадена от: '+(c.iss||'МВР/MOL BGR'),'Дата на издаване: '+(c.idd?bgd(c.idd):''),
+    'Адрес: '+(c.addr||''),'Телефон: '+(c.phone||''),'Имейл: '+(c.email||''),'IBAN: '+(c.iban||''),'Кола: '+car,'Номер на договор: '+(c.cno||''),'Дата на документите: '+(c.ddate?bgd(c.ddate):'същата като в образеца')].filter(Boolean).join('\n')}
 $('#cnew').onclick=()=>cform();
 $('#cq').oninput=e=>{cq=e.target.value.trim();crender()};
 $('#ccnt').onclick=e=>{const b=e.target.closest('[data-cf]');if(!b)return;cflt=b.dataset.cf===cflt?'all':b.dataset.cf;crender()};
 $('#clist').addEventListener('click',e=>{const b=e.target.closest('[data-ced]');if(b)cform(cand.find(c=>c.id===b.dataset.ced))});
 $('#clist').addEventListener('change',e=>{const s=e.target.closest('[data-cst]');if(!s)return;const c=cand.find(x=>x.id===s.dataset.cst);if(!c)return;Object.assign(c,{status:s.value});save();crender();toast(c.name+': '+s.value)});
-$('#cmodal').addEventListener('click',e=>{if(e.target.id==='cmodal'||e.target.dataset.cl){$('#cmodal').hidden=true;return}
-  if(e.target.id==='csave'){const o={};document.querySelectorAll('#cbody [data-cf2]').forEach(i=>{const v=i.value.trim();if(v)o[i.dataset.cf2]=v});
-    if(!o.name){toast('Напиши име');return}if(o.iban)o.iban=o.iban.replace(/\s+/g,'').toUpperCase();
-    const i=cand.findIndex(c=>c.id===cedit),rec={id:cedit||'c'+Date.now().toString(36),...o};if(i>=0)cand[i]=rec;else cand.push(rec);
-    $('#cmodal').hidden=true;save();crender();toast('Запазено')}
+$('#cmodal').addEventListener('click',async e=>{if(e.target.id==='cmodal'||e.target.dataset.cl){$('#cmodal').hidden=true;return}
+  if(e.target.id==='csave'){const o=cread();if(!o.name){toast('Напиши име');return}cput(o);$('#cmodal').hidden=true;toast('Запазено')}
+  if(e.target.id==='ccopy'){const o=cread();if(!o.name){toast('Напиши име');return}
+    const need=[['egn',o.idt||'ЕГН'],['idn','Л.к. №'],['idd','Дата на издаване'],['addr','Адрес'],['phone','Телефон'],['email','Имейл'],['iban','IBAN'],['car','Марка/модел'],['reg','Рег. номер'],['fuel','Гориво']].filter(([k])=>!o[k]).map(x=>x[1]);
+    if(need.length&&!confirm('Липсва: '+need.join(', ')+'.\nДа копирам ли все пак?'))return;
+    let nw='';if(!o.cno){o.cno=cnoNext();nw=o.cno}
+    const c=cput(o);if(nw){const f=$('[data-cf2=cno]');if(f)f.value=nw}
+    try{await Promise.race([navigator.clipboard.writeText(ctext(c)),new Promise((_,j)=>setTimeout(j,1500))])}catch(err){const a=document.createElement('textarea');a.value=ctext(c);document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e2){}a.remove()}
+    toast('Копирано'+(nw?' · номер на договор '+nw+' е запазен за '+c.name:'')+'. Постави го в чата за договорите.',6000)}
   if(e.target.id==='cdel'){const c=cand.find(x=>x.id===cedit);if(c&&confirm('Да изтрия ли „'+c.name+'“ от кандидатите?')){cand=cand.filter(x=>x.id!==cedit);$('#cmodal').hidden=true;save();crender();toast('Изтрит')}}});
 $('#pcsv').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;const out=[];for(const f of fs)out.push(await perfImport(f));save();render();const ok=out.filter(x=>x.startsWith('Сед.')),bad=out.filter(x=>!x.startsWith('Сед.')),wk=[...new Set(ok.map(x=>x.match(/\d+/)[0]))].sort((a,b)=>a-b);toast([ok.length>2?'Внесени '+ok.length+' файла за сед. '+wk.join(', '):ok.join(' · '),...bad].filter(Boolean).join(' · '),6000)};
 // чете файла на Болт с поръчките (courier_orders) или с часовете онлайн (courier_activity_periods).
