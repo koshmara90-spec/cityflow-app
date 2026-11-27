@@ -54,7 +54,11 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 @media(max-width:900px){nav{position:fixed;z-index:50;left:0;top:0;bottom:0;height:auto;width:250px;padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(14px + env(safe-area-inset-bottom,0px));overflow-y:auto;transform:translateX(-105%);transition:transform .22s ease;box-shadow:0 0 30px rgba(0,0,0,.4)}.app{align-content:start}.app.m nav{transform:none}.app.m #mbg{display:block;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45)}#mb{display:grid;place-items:center;width:42px;height:42px;padding:0;border-radius:12px;background:var(--card);color:var(--ac);flex:none}#mb svg{width:22px;height:22px}main{padding-top:calc(14px + env(safe-area-inset-top,0px))}}
 @media(max-width:600px){.top{margin-bottom:12px;gap:8px}.top h1{font-size:22px}.tiles{grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 18px}.tile[data-a=new]{display:none}.rings{gap:10px;margin-bottom:16px}.rings svg{width:104px;height:104px}.tile{height:74px;gap:5px;font-size:12px;line-height:1.2;padding:8px 6px;border-radius:12px}.tile i svg{width:24px;height:24px;stroke-width:1.8}}
 .app.w{--ac:var(--wb);--oa:var(--wo)}.app.w aside,.app.c aside{display:none}.vg{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(max(260px,calc((100% - 20px) / 3)),1fr))}.vd,.vs{display:grid;gap:7px;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--bg)}.hp{position:relative;height:12px;border-radius:4px;background:color-mix(in srgb,var(--bd) 60%,transparent);overflow:hidden}.hp i{display:block;height:100%;background:var(--c);box-shadow:0 0 10px var(--c);border-radius:4px;transition:width .8s}.hp:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(5% - 2px),var(--bg) calc(5% - 2px) 5%)}.hp.x i{animation:hpx 1s ease-in-out infinite alternate}@keyframes hpx{to{opacity:.35}}#clist a{color:var(--ac)}.app.w .top h1{color:var(--wb)}
-@media(min-width:1281px){.app.w{grid-template-columns:230px minmax(0,1fr)}}
+@media(min-width:1281px){.app.w,.app.nb{grid-template-columns:230px minmax(0,1fr)}}
+.app.nb aside{display:none}
+.ro-biz :is(#nw,.tiles,[data-ed],[data-del],[data-pay],[data-pe],[data-psave],[data-bina],[data-bact],[data-bdel]),.ro-perf :is(#pimp2,[data-called]),.ro-cand :is(#cnew,#csave,#cdel,#ccopy,[data-cst]),.ro-wolt :is(#v-wolt .card:has(#wft),[data-wed],[data-wdel],[data-wpay]),.ro-veh :is(#vnew,label:has(#vd),[data-vdo],[data-ved],[data-vkm],[data-vldel],#vsave,#vdel,#vlsave){display:none!important}
+.ro-cand #cbody :is(input,select,textarea){pointer-events:none}.rob{display:none;font-size:12px;color:var(--mu);padding:0 14px 6px}.app.na .rob{display:block}
+#accl table td{padding:4px 8px 4px 0;vertical-align:middle}#accl select{width:auto}
 :root.w:not([data-theme="dark"]){--bg:#dbeefb;--side:#c8e3f7;--card:#f2f9ff;--bd:#b7d5ec;--tx:#0c2a47;--mu:#56748f;--wb:#0a78b8}
 :root[data-theme="dark"].w{--bg:#0a1a33;--side:#081426;--card:#102a4f;--bd:#1f4275;--tx:#eaf3ff;--mu:#8ea9cc}
 .calw{position:fixed;inset:0;background:#0008;display:grid;place-items:center;z-index:40}.calb{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;width:min(320px,92vw)}
@@ -70,7 +74,7 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 </style></head><body><div class="app">
 <nav><div class="brand">CityFlow LTD</div>
 <button data-v="dash" class="on"><i data-i="home"></i>Табло</button><button data-v="cour"><i data-i="bike"></i>Куриери</button><button data-v="perf"><i data-i="trend"></i>Представяне</button><button data-v="cand"><i data-i="user"></i>Нови кандидати</button><button data-v="inv"><i data-i="receipt"></i>Фактури и разходи</button><button data-v="hist"><i data-i="clock"></i>История</button><button data-v="week"><i data-i="chart"></i>Седмици</button><button data-v="lich"><i data-i="me"></i>Лично<span id="lbd" hidden style="margin-left:auto;background:var(--out);color:#fff;border-radius:9px;font-size:11px;padding:1px 7px;font-weight:600"></span></button><button data-v="set"><i data-i="sliders"></i>Настройки</button>
-<span class="grow"></span><div id="sync" style="padding:6px 14px;font-size:12px;color:var(--mu)">☁</div><button id="theme"></button></nav>
+<span class="grow"></span><div class="rob" id="rob"></div><div id="sync" style="padding:6px 14px;font-size:12px;color:var(--mu)">☁</div><button id="theme"></button></nav>
 <div id="mbg"></div><main><div class="top"><div style="display:flex;align-items:center;gap:10px;min-width:0"><button id="mb" aria-label="Меню"></button><h1 id="vt">Здравей</h1></div><div style="display:flex;gap:8px;align-items:center"><span id="perw"><select id="per" style="width:auto" aria-label="Период"></select></span><button class="p" data-a="new" id="nw">＋ Нов запис</button></div></div>
 <div id="warn" class="card" hidden></div>
 <section class="view" id="v-dash"><div class="tiles">
@@ -103,6 +107,7 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 <div class="rings" id="wsum"></div>
 <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Записи</h2><button id="wcsv">CSV</button></div><div class="ov" id="wtbl"></div></div></section>
 <section class="view" id="v-set" hidden><div class="card"><h2>Данни и резервни копия</h2><p><small>Данните се пазят в твоята Google Таблица, а копие стои и на това устройство, затова работи и без интернет. Промените се изпращат, щом има връзка. „Импорт на копие“ добавя записи от резервно копие (JSON) от старата версия, без да трие нищо.</small></p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="p" id="bk">Резервно копие</button><button id="rk">Смени ключа</button><button id="rs">Импорт на копие</button><button id="csv">Изтегли CSV</button><input type="file" id="rf" accept=".json,application/json" hidden></div></div>
+<div class="card" id="acc" hidden><h2>Достъп за служители</h2><p style="margin:0 0 10px"><small>Всеки служител има свой ключ. За всеки раздел избираш: <b>Скрит</b>, <b>Само гледа</b> или <b>Може да редактира</b>. Твоят ключ е Мастър ключът – с него виждаш и правиш всичко. Промяната стига до служителя до около 20 секунди. „Спрян“ или „Нов ключ“ спира стария ключ веднага.</small></p><div id="accl"><small>Зареждане…</small></div><button id="accn" style="margin-top:10px">+ Нов служител</button></div>
 <div class="card"><h2>Име</h2><label>Как да те поздравява таблото</label><input id="sme" maxlength="30" autocomplete="off" style="max-width:220px" placeholder="Твоето име"></div>
 <div class="card"><h2>Прагове за „Представяне“</h2><p style="margin:0 0 10px"><small>Кога куриер влиза в броячите и в списъка „За обаждане“. Промяната важи веднага.</small></p><div class="f" id="sth"></div><button id="sthr" style="margin-top:10px">Върни стойностите по подразбиране</button></div>
 <div class="card"><h2>Удръжка</h2><label>Стандартна удръжка на куриер за седмица (€)</label><input id="sded" type="number" step="0.01" min="0" style="max-width:160px"></div>
@@ -150,10 +155,10 @@ let ui={},uiReady=false,snap={items:{},wolt:{},perf:{},cand:{},veh:{},vlog:{},pf
 const js=o=>JSON.stringify(o),API='https://script.google.com/macros/s/AKfycby4pRymJXVAPh9GTYfWEdSvPTtw6XzLCWIwuNFQeiLxQ5CBayuFpeMqBsTKde_GmURo/exec',KK='cityflow.key',CK='cityflow.cache';
 const apiKey=()=>{try{return localStorage.getItem(KK)||''}catch(e){return ''}};
 function run(){let ok=()=>{},bad=()=>{};const o={withSuccessHandler(f){ok=f;return o},withFailureHandler(f){bad=f;return o}};
-  ['load','getRev','applyOps','setUi'].forEach(fn=>o[fn]=(...args)=>{fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:js({key:apiKey(),fn,args})})
+  ['load','getRev','applyOps','setUi','listUsers','saveUser','delUser'].forEach(fn=>o[fn]=(...args)=>{fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:js({key:apiKey(),fn,args})})
     .then(r=>r.json()).then(r=>{if(r.ok)ok(r.data);else{if(r.error==='Грешен ключ'){try{localStorage.removeItem(KK)}catch(x){}askKey('Ключът не е верен. Опитай пак.')}bad(new Error(r.error))}}).catch(e=>bad(e))});return o}
-function cache(){try{localStorage.setItem(CK,js({sv:2,items,wolt,perf,cand,veh,vlog,couriers,DED,wd0,prof,snap,rev,ui}))}catch(e){}}
-function fromCache(){try{const c=JSON.parse(localStorage.getItem(CK)||'null');if(!c||!c.snap)return false;items=norm(c.items)||[];wolt=normW(c.wolt);perf=normP(c.perf);cand=normC(c.cand);veh=normV(c.veh);vlog=normV(c.vlog);couriers=c.couriers||[];DED=c.DED??30;wd0=c.wd0||{p:0,f:0};prof=c.prof||{};snap=c.snap;snap.perf=snap.perf||{};snap.cand=snap.cand||{};snap.veh=snap.veh||{};snap.vlog=snap.vlog||{};if(c.sv!==2){snap.cand={};snap.veh={};snap.vlog={}}rev=c.rev||0;ui=c.ui||{};return true}catch(e){return false}}
+function cache(){try{localStorage.setItem(CK,js({sv:2,me,items,wolt,perf,cand,veh,vlog,couriers,DED,wd0,prof,snap,rev,ui}))}catch(e){}}
+function fromCache(){try{const c=JSON.parse(localStorage.getItem(CK)||'null');if(!c||!c.snap)return false;items=norm(c.items)||[];wolt=normW(c.wolt);perf=normP(c.perf);cand=normC(c.cand);veh=normV(c.veh);vlog=normV(c.vlog);couriers=c.couriers||[];DED=c.DED??30;wd0=c.wd0||{p:0,f:0};prof=c.prof||{};me=c.me||null;snap=c.snap;snap.perf=snap.perf||{};snap.cand=snap.cand||{};snap.veh=snap.veh||{};snap.vlog=snap.vlog||{};if(c.sv!==2){snap.cand={};snap.veh={};snap.vlog={}}rev=c.rev||0;ui=c.ui||{};return true}catch(e){return false}}
 function askKey(msg){const l=$('#loading');l.hidden=false;l.innerHTML='<div style="max-width:340px;width:100%"><h2>CityFlow LTD</h2><p><small>'+(msg||'Въведи тайния ключ (веднъж, после се помни на това устройство).')+'</small></p>'
   +'<input id="kin" type="password" autocomplete="off" style="width:100%;margin:8px 0;font-size:16px" placeholder="Таен ключ"><button class="p" id="kok" style="width:100%">Влез</button></div>';
   $('#kok').onclick=()=>{const k=$('#kin').value.trim();if(!k)return;try{localStorage.setItem(KK,k)}catch(e){}l.innerHTML='Зареждане…';start()}}
@@ -161,16 +166,23 @@ function pending(){const a=diff('items',items),w=diff('wolt',wolt),pe=diff('perf
 function setSync(x){const e=$('#sync');e.textContent=x==='saving'?'☁ Запазва се…':x==='err'?'⚠ Няма връзка. Ще опитам пак':x==='old'?'⚠ Обнови Code.gs в Google':'☁ Синхронизирано';e.style.color=x==='err'||x==='old'?'var(--out)':'var(--mu)';e.title=x==='old'?'Постави новия google/Code.gs в Apps Script и направи New version. Дотогава новите данни стоят само на това устройство и ще се изпратят сами след това.':''}
 function diff(k,arr){const cur={},up=[],del=[];arr.forEach(i=>{cur[i.id]=js(i);if(snap[k][i.id]!==cur[i.id])up.push(i)});Object.keys(snap[k]).forEach(id=>{if(!(id in cur))del.push(id)});return{up,del,cur}}
 const pfSnap=()=>Object.fromEntries(Object.entries(prof).map(([k,v])=>[k,js(v)]));
-function save(){cache();if(busy){dirty=true;return}
+// служител без право да редактира: връща промяната обратно и не я праща (Google така или иначе би я отказал)
+function guard(){if(isAdm())return false;let r=false;const back=(k,L,g)=>{if(can(g))return L;const d=diff(k,L);if(!d.up.length&&!d.del.length)return L;r=true;return Object.values(snap[k]).map(s=>JSON.parse(s))};
+  items=back('items',items,'biz');wolt=back('wolt',wolt,'wolt');perf=back('perf',perf,'perf');cand=back('cand',cand,'cand');veh=back('veh',veh,'veh');vlog=back('vlog',vlog,'veh');
+  if(snap.st){const o=JSON.parse(snap.st),W={ina:'biz',calls:'perf',p:'wolt',f:'wolt',vd:'veh'},w0=o.wd0||{},w={...wd0};
+    if(!can('biz')){if(js(couriers)!==js(o.couriers)){couriers=o.couriers||[];r=true}if(DED!==o.DED){DED=o.DED;r=true}if(js(pfSnap())!==js(snap.pf)){prof=Object.fromEntries(Object.entries(snap.pf).map(([k,v])=>[k,JSON.parse(v)]));r=true}}
+    let wc=false;Object.keys({...w,...w0}).forEach(k=>{if(!(W[k]&&can(W[k]))&&js(w[k])!==js(w0[k])){if(w0[k]===undefined)delete w[k];else w[k]=w0[k];wc=true}});if(wc){wd0=w;r=true}}
+  if(r){toast('Само за преглед – промяната не е запазена');setTimeout(()=>{render();renderBatch();wrender();crender();vrender()},0)}return r}
+function save(){guard();cache();if(busy){dirty=true;return}
   const a=diff('items',items),w=diff('wolt',wolt),pe=diff('perf',perf),ca=diff('cand',cand),ve=diff('veh',veh),vl=diff('vlog',vlog),st=js({couriers,DED,wd0}),ops={};if(pe.up.length||pe.del.length)ops.perf={up:pe.up,del:pe.del};if(ca.up.length||ca.del.length)ops.cand={up:ca.up,del:ca.del};if(ve.up.length||ve.del.length)ops.veh={up:ve.up,del:ve.del};if(vl.up.length||vl.del.length)ops.vlog={up:vl.up,del:vl.del};
   if(a.up.length||a.del.length)ops.items={up:a.up,del:a.del};if(w.up.length||w.del.length)ops.wolt={up:w.up,del:w.del};const pf=pfSnap(),pp={};Object.keys(pf).forEach(k=>{if(snap.pf[k]!==pf[k])pp['prof:'+k]=prof[k]});Object.keys(snap.pf).forEach(k=>{if(!(k in pf))pp['prof:'+k]=null});if(st!==snap.st||Object.keys(pp).length)ops.settings={...(st!==snap.st?{couriers,DED,wd0}:{}),...pp};
   if(!Object.keys(ops).length)return;
   busy=true;setSync('saving');
   run().withSuccessHandler(r=>{snap.items=a.cur;snap.wolt=w.cur;const has=(r&&r.has)||[],miss=[];Object.entries({perf:pe,cand:ca,veh:ve,vlog:vl}).forEach(([k,x])=>{if(has.includes(k))snap[k]=x.cur;else if(x.up.length||x.del.length)miss.push(k)});snap.st=st;snap.pf=pf;rev=r.rev;busy=false;setSync(miss.length?'old':'ok');cache();if(dirty){dirty=false;save()}})
    .withFailureHandler(()=>{busy=false;setSync('err');clearTimeout(retry);retry=setTimeout(save,5000)}).applyOps(ops)}
-function applyServer(d){items=norm(d.items)||[];wolt=normW(d.wolt);const srv=(k,L,nf)=>{if(!Array.isArray(d[k])){snap[k]={};return L}const S=nf(d[k]),loc=L.filter(i=>!(i.id in snap[k])&&!S.some(x=>x.id===i.id));snap[k]=Object.fromEntries(S.map(i=>[i.id,js(i)]));return S.concat(loc)};perf=srv('perf',perf,normP);cand=srv('cand',cand,normC);veh=srv('veh',veh,normV);vlog=srv('vlog',vlog,normV);couriers=d.couriers||[];DED=d.DED??30;wd0=d.wd0||{p:0,f:0};prof=d.prof||{};rev=d.rev||0;
+function applyServer(d){me=d.me||null;items=norm(d.items)||[];wolt=normW(d.wolt);const srv=(k,L,nf)=>{if(!Array.isArray(d[k])){snap[k]={};return L}const S=nf(d[k]),loc=L.filter(i=>!(i.id in snap[k])&&!S.some(x=>x.id===i.id));snap[k]=Object.fromEntries(S.map(i=>[i.id,js(i)]));return S.concat(loc)};perf=srv('perf',perf,normP);cand=srv('cand',cand,normC);veh=srv('veh',veh,normV);vlog=srv('vlog',vlog,normV);couriers=d.couriers||[];DED=d.DED??30;wd0=d.wd0||{p:0,f:0};prof=d.prof||{};rev=d.rev||0;
   snap.items=Object.fromEntries(items.map(i=>[i.id,js(i)]));snap.wolt=Object.fromEntries(wolt.map(i=>[i.id,js(i)]));snap.st=js({couriers,DED,wd0});snap.pf=pfSnap();cache()}
-function loadAll(first){run().withSuccessHandler(d=>{ui=d.ui||{};applyServer(d);if(first){theme(ui.theme||'dark');zoom(ui.zoom||'1');tm=null}uiReady=true;$('#ded').value=$('#bded').value=DED;$('#loading').hidden=true;setSync('ok');render();renderBatch();wrender()})
+function loadAll(first){run().withSuccessHandler(d=>{ui=d.ui||{};applyServer(d);if(first){theme(ui.theme||'dark');zoom(ui.zoom||'1');tm=null}uiReady=true;$('#ded').value=$('#bded').value=DED;$('#loading').hidden=true;setSync('ok');applyMe();render();renderBatch();wrender()})
   .withFailureHandler(e=>{if(uiReady){setSync('err');return}if(!apiKey())return;$('#loading').textContent='Грешка при зареждане: '+((e&&e.message)||e)+' – провери интернета и отвори пак.'}).load()}
 function poll(){if(document.hidden||busy||dirty||!uiReady)return;if(pending()){save();return}run().withSuccessHandler(r=>{if(r!==rev&&!busy&&!dirty)loadAll(false)}).getRev()}
 setInterval(poll,20000);document.addEventListener('visibilitychange',poll);
@@ -193,7 +205,7 @@ function sync(){
   $('#lp').textContent=inc?'От кого':c==='Куриер'?'Име на куриера':'На кого';
   if(inc&&!$('#party').value)$('#party').value='Болт';
 }
-const hi=()=>'Здравей'+(wd0.me?', '+wd0.me.toLocaleUpperCase('bg'):'');
+const hi=()=>{const n=me&&!me.admin?me.name:wd0.me;return 'Здравей'+(n?', '+n.toLocaleUpperCase('bg'):'')};
 function render(){if(view==='dash')$('#vt').textContent=hi();
   const ms=[...new Set(items.map(i=>(eff(i)||i.date).slice(0,7)))].sort().reverse();
   $('#per').innerHTML='<option value="all">Цялата история</option>'+ms.map(m=>`<option value="${m}">${m.split('-').reverse().join('.')}</option>`).join('');
@@ -301,6 +313,13 @@ const IC={me:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><pat
 const ic=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
 function zoom(z){document.documentElement.style.zoom=z;document.documentElement.style.setProperty('--z',z);ui.zoom=z;saveUi();$('#zm').value=z}
 $('#zm').onchange=e=>zoom(e.target.value);
+let me=null,users=null;
+const GV={dash:'biz',cour:'biz',inv:'biz',hist:'biz',week:'biz',perf:'perf',cand:'cand',wolt:'wolt',veh:'veh'};
+const isAdm=()=>!me||!!me.admin,see=g=>isAdm()||!!(me.acc||{})[g],can=g=>isAdm()||(me.acc||{})[g]==='e';
+function applyMe(){const A=$('.app');document.querySelectorAll('nav [data-v],.ltab [data-v]').forEach(b=>{const v=b.dataset.v;b.hidden=v==='set'?!isAdm():v==='lich'?!(see('wolt')||see('veh')):!see(GV[v])});
+  ['biz','perf','cand','wolt','veh'].forEach(g=>A.classList.toggle('ro-'+g,see(g)&&!can(g)));A.classList.toggle('na',!isAdm());A.classList.toggle('nb',!see('biz'));
+  $('#rob').textContent=isAdm()?'':'👤 '+(me.name||'Служител')+(['biz','perf','cand','wolt','veh'].some(can)?'':' · само преглед');
+  if(!see(lsub))lsub=see('wolt')?'wolt':'veh';if((view==='set'&&!isAdm())||(GV[view]&&!see(GV[view]))){const f=[...document.querySelectorAll('nav [data-v]')].find(b=>!b.hidden);if(f)go(f.dataset.v)}}
 let view='dash',lsub='wolt';const T={week:'Седмичен резултат',wolt:'WOLT',dash:'Здравей',cour:'Куриери',perf:'Представяне',cand:'Нови кандидати',veh:'Превозни средства',inv:'Фактури и разходи',hist:'История',set:'Настройки'};
 const catF=i=>view==='cour'?i.cat==='Куриер':view==='inv'?(!isIn(i)&&i.cat!=='Куриер'):true;
 function ring(p,c,sub){const R=52,C=2*Math.PI*R,t=p.reduce((a,x)=>a+x[0],0)||1;let o=0;
@@ -315,7 +334,7 @@ function dash(inc,exp,res,open,od){
   $('#b1').textContent=nc;$('#b1').hidden=!nc;$('#b2').textContent=ni;$('#b2').hidden=!ni;
   const rc=items.filter(paid).sort((a,b)=>cd(b).localeCompare(cd(a))).slice(0,6);
   $('#recent').innerHTML=rc.length?rc.map(i=>`<div class="row"><div class="m" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">✅ <b>${nm(i,esc(i.cat))}</b> <small>${bgd(cd(i)).slice(0,5)}${i.wend?' · Сед. '+wkNo(i.date):''}</small></div><b class="${isIn(i)?'in':'out'}">${isIn(i)?'+':'−'}${eur(i.amt)}</b></div>`).join(''):'<small>Още няма платени.</small>';alerts()}
-function go(v){if(v==='lich')v=lsub;if(v==='wolt'||v==='veh')lsub=v;const nv=v===lsub?'lich':v;view=v;$('.app').classList.remove('m');$('#mb').innerHTML=ic(document.querySelector('nav [data-v="'+nv+'"] i').dataset.i);document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===nv));document.querySelectorAll('.ltab [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='v-'+v);$('#vt').textContent=v==='dash'?hi():T[v];$('.app').classList.toggle('w',v==='wolt');document.documentElement.classList.toggle('w',v==='wolt');$('#nw').hidden=v==='wolt'||v==='cand'||v==='veh';$('.app').classList.toggle('c',v==='cand'||v==='veh');$('#perw').hidden=!(v==='dash'||v==='cour');
+function go(v){if(v==='lich')v=lsub;if(v==='wolt'||v==='veh')lsub=v;const nv=v===lsub?'lich':v;view=v;$('.app').classList.remove('m');$('#mb').innerHTML=ic(document.querySelector('nav [data-v="'+nv+'"] i').dataset.i);document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===nv));document.querySelectorAll('.ltab [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='v-'+v);$('#vt').textContent=v==='dash'?hi():T[v];$('.app').classList.toggle('w',v==='wolt');document.documentElement.classList.toggle('w',v==='wolt');$('#nw').hidden=v==='wolt'||v==='cand'||v==='veh';$('.app').classList.toggle('c',v==='cand'||v==='veh');$('#perw').hidden=!(v==='dash'||v==='cour');if(v==='set')accLoad();
   const sl=$('#s-'+v);if(sl)sl.appendChild($('#recs'));if(v==='set'){$('#sded').value=DED;$('#sme').value=wd0.me||'';sthFill()}tm=null;tp=0;render();scrollTo(0,0)}
 function openM(){$('#modal').hidden=false}function closeM(){$('#modal').hidden=true;$('#imodal').hidden=true;$('#smodal').hidden=true;$('#pmodal').hidden=true;$('#cmodal').hidden=true;$('#vmodal').hidden=true}
 function theme(t){document.documentElement.dataset.theme=t;ui.theme=t;saveUi();$('#theme').innerHTML=t==='dark'?'<i>'+ic('sun')+'</i>Светла тема':'<i>'+ic('moon')+'</i>Тъмна тема'}
@@ -704,6 +723,21 @@ $('#pwk').onchange=e=>{pwk=e.target.value;prender()};
 $('#pcnt').onclick=e=>{const b=e.target.closest('[data-pf]');if(!b)return;pflt=b.dataset.pf===pflt?'all':b.dataset.pf;prender()};
 $('#ptab').addEventListener('click',e=>{const t=e.target.closest('th[data-s]');if(!t)return;const k=t.dataset.s;if(psort===k)pdir=-pdir;else{psort=k;pdir=k==='name'?1:-1}prender()});
 // ---- нови кандидати: отделен списък, без връзка с другите раздели ----
+const AG=[['biz','Фирма','Табло, Куриери, Фактури и разходи, История, Седмици'],['perf','Представяне',''],['cand','Нови кандидати',''],['wolt','WOLT',''],['veh','Превозни средства','']],AO=[['','Скрит'],['r','Само гледа'],['e','Може да редактира']];
+function accLoad(){if(typeof run!=='function'||!isAdm())return;$('#acc').hidden=false;run().withSuccessHandler(L=>{users=L||[];accRender()}).withFailureHandler(e=>{$('#accl').innerHTML='<small class="out">Не успях да заредя списъка: '+esc((e&&e.message)||e)+'. Обнови Code.gs в Google.</small>'}).listUsers()}
+function accRender(){$('#accl').innerHTML=users.length?users.map(u=>`<div data-u="${esc(u.id)}" style="border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:10px;background:var(--bg)${u.off?';opacity:.6':''}">
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px"><input data-un value="${esc(u.name)}" maxlength="40" aria-label="Име" style="max-width:220px;font-weight:600"><label style="margin:0;display:flex;gap:6px;align-items:center"><input type="checkbox" data-uoff ${u.off?'checked':''}> Спрян</label></div>
+<div class="ov"><table>${AG.map(([g,l,s])=>`<tr><td>${l}${s?`<br><small>${s}</small>`:''}</td><td><select data-ua="${g}">${AO.map(([v,t])=>`<option value="${v}" ${((u.acc||{})[g]||'')===v?'selected':''}>${t}</option>`).join('')}</select></td></tr>`).join('')}</table></div>
+<label style="display:flex;gap:6px;align-items:center;margin:8px 0"><input type="checkbox" data-upii ${u.pii?'checked':''}> Вижда ЕГН, IBAN, телефони, имейли и адреси</label>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="p" data-usave>Запази</button><button data-ukey>📋 Копирай ключа</button><button data-unew>Нов ключ</button><button data-udel style="color:var(--out)">Изтрий</button><small>ключ ${esc(String(u.key||'').slice(0,4))}…</small></div></div>`).join(''):'<small>Още няма служители. Натисни „+ Нов служител“.</small>'}
+function accGet(b){const d=b.closest('[data-u]'),acc={};d.querySelectorAll('[data-ua]').forEach(s=>{if(s.value)acc[s.dataset.ua]=s.value});return{id:d.dataset.u,name:d.querySelector('[data-un]').value,off:d.querySelector('[data-uoff]').checked,pii:d.querySelector('[data-upii]').checked,acc}}
+function accDo(fn,arg,msg){run().withSuccessHandler(L=>{users=L||[];accRender();if(msg)toast(msg)}).withFailureHandler(e=>toast('Грешка: '+((e&&e.message)||e)))[fn](arg)}
+$('#accn').onclick=()=>accDo('saveUser',{name:'Служител '+((users||[]).length+1),acc:{}},'Добавен. Избери права, натисни „Запази“ и му дай ключа.');
+$('#acc').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||!b.closest('[data-u]'))return;const o=accGet(b),u=(users||[]).find(x=>x.id===o.id);if(!u)return;
+  if('usave' in b.dataset)accDo('saveUser',o,'Запазено: '+o.name);
+  else if('unew' in b.dataset){if(sure('un'+o.id,b,'Старият ключ спира. Сигурен ли си?'))accDo('saveUser',{...o,newKey:true},'Нов ключ за '+o.name+' – копирай го и му го дай')}
+  else if('udel' in b.dataset){if(sure('ud'+o.id,b,'Изтрий '+o.name+'?'))accDo('delUser',o.id,'Изтрит')}
+  else if('ukey' in b.dataset){let ok=false;try{await Promise.race([navigator.clipboard.writeText(u.key),new Promise((_,r)=>setTimeout(r,1500))]);ok=true}catch(x){const a=document.createElement('textarea');a.value=u.key;document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch(x2){}a.remove()}toast(ok?'Ключът на '+u.name+' е копиран':'Не успях да копирам')}});
 function crender(){const n=s=>cand.filter(c=>c.status===s).length;
   $('#ccnt').innerHTML=`<button data-cf="all" class="${cflt==='all'?'on':''}">Всички <b>${cand.length}</b></button>`+CST.map(s=>`<button data-cf="${s}" class="${cflt===s?'on':''}">${s} <b>${n(s)}</b></button>`).join('');
   const q=cq.toLowerCase(),L=cand.filter(c=>(cflt==='all'||c.status===cflt)&&(!q||[c.name,c.phone,c.city,c.note,c.src].some(x=>(x||'').toLowerCase().includes(q))))
@@ -796,7 +830,7 @@ $('#rf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)re
     (x.couriers||[]).forEach(c=>{if(!couriers.includes(c))couriers.push(c)});if(x.DED!=null)DED=x.DED;if(x.wd0)wd0=x.wd0;if(x.prof)prof={...prof,...x.prof};
     $('#ded').value=$('#bded').value=DED;tm=null;save();render();renderBatch();wrender();toast('Импортирани: '+L.length+' записа'+(W.length?' и '+W.length+' от WOLT':''))}catch(err){toast('Невалиден файл')}};
 function start(){if(!apiKey())return askKey();
-  if(fromCache()){theme(ui.theme||'dark');zoom(ui.zoom||'1');tm=null;uiReady=true;$('#ded').value=$('#bded').value=DED;$('#loading').hidden=true;setSync('ok');render();renderBatch();wrender();poll()}
+  if(fromCache()){theme(ui.theme||'dark');zoom(ui.zoom||'1');tm=null;uiReady=true;applyMe();$('#ded').value=$('#bded').value=DED;$('#loading').hidden=true;setSync('ok');render();renderBatch();wrender();poll()}
   else loadAll(true)}
 $('#rk').onclick=e=>{if(sure('rk',e.target,'Смени ключа?')){try{localStorage.removeItem(KK)}catch(x){}askKey()}};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
