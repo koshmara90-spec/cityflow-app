@@ -295,9 +295,9 @@ $('#bsave').onclick=async()=>{
 };
 const MN=['Януари','Февруари','Март','Април','Май','Юни','Юли','Август','Септември','Октомври','Ноември','Декември'],setV=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;
 let calEl=null,calY=0,calM=0;
-function dateInput(el){let v='';el.type='text';el.readOnly=true;el.placeholder='дд.мм.гггг';el.style.cursor='pointer';
+function dateInput(el){if(el._dt)return;el._dt=1;let v='';const v0=el.value;el.type='text';el.readOnly=true;el.placeholder='дд.мм.гггг';el.style.cursor='pointer';
   Object.defineProperty(el,'value',{get:()=>v,set:x=>{v=x||'';setV.call(el,v?bgd(v):'')}});
-  el.addEventListener('click',()=>openCal(el));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCal(el)}})}
+  el.addEventListener('click',()=>openCal(el));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCal(el)}});if(v0)el.value=v0}
 function openCal(el){calEl=el;const d=el.value?new Date(el.value+'T12:00:00'):new Date();calY=d.getFullYear();calM=d.getMonth();drawCal();$('#cal').hidden=false}
 function closeCal(){$('#cal').hidden=true;if(calEl&&/^wf[12]$/.test(calEl.id))wrender()}
 function drawCal(){const off=(new Date(calY,calM,1,12).getDay()+6)%7,st=new Date(calY,calM,1-off,12),sel=calEl.value,td=today();
@@ -309,6 +309,9 @@ $('#cal').addEventListener('click',e=>{const t=e.target,d=t.dataset;if(t.id==='c
   if(d.c==='-1'||d.c==='1'){calM+=+d.c;if(calM<0){calM=11;calY--}if(calM>11){calM=0;calY++}drawCal()}
   if(d.c==='today'){calEl.value=today();closeCal()}if(d.c==='clear'){calEl.value='';closeCal()}});
 ['date','due','rdate','pdate','bdue','wd','we','wrd'].forEach(id=>dateInput($('#'+id)));
+// всяко поле за дата, и в бъдещи форми (кандидати, коли…), получава нашия календар: от понеделник, дд.мм.гггг – независимо от езика на компютъра
+const dateAll=r=>{if(r.nodeType!==1)return;if(r.matches('input[type=date]'))dateInput(r);r.querySelectorAll('input[type=date]').forEach(dateInput)};
+dateAll(document.body);new MutationObserver(M=>M.forEach(m=>m.addedNodes.forEach(dateAll))).observe(document.body,{childList:true,subtree:true});
 const IC={me:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18.5a6 6 0 0111 0"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/><path d="M19 3v4M17 5h4"/>',trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',bike:'<circle cx="6" cy="17" r="3.5"/><circle cx="18" cy="17" r="3.5"/><path d="M6 17l4-8h5l3 8M10 9L8.5 6H6M13 9l-2 8"/>',receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',sliders:'<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',plus:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',down:'<path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 19h16"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 016 0v2"/>',doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',moon:'<path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/>'};
 const ic=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
 function zoom(z){document.documentElement.style.zoom=z;document.documentElement.style.setProperty('--z',z);ui.zoom=z;saveUi();$('#zm').value=z}
@@ -765,7 +768,7 @@ ${grp('Лични данни за договора',CP)}${grp('Кола за д�
 <div><label>Бележка</label><textarea data-cf2="note" rows="3" style="font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:7px;padding:7px 9px;width:100%;box-sizing:border-box">${esc(c.note||'')}</textarea></div>
 <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="p" id="csave">Запази</button><button id="ccopy">📋 Копирай за документите</button>${cedit?'<button id="cdel" style="color:var(--out)">Изтрий</button>':''}</div>
 <p style="margin:8px 0 0"><small>„Копирай за документите“ запазва кандидата и копира данните като текст. Постави го в чата за договорите.</small></p>`;
-  $('#cmodal').hidden=false;$('[data-cf2=name]').focus()}
+  $('#cmodal').hidden=false;if(!matchMedia('(pointer:coarse)').matches)$('[data-cf2=name]').focus()} // на телефон клавиатурата излиза чак когато натиснеш поле
 // следващ номер на договор: последният даден извън приложението е 006
 function cnoNext(){const m=Math.max(6,...cand.map(c=>parseInt(String(c.cno||'').replace(/\D/g,''),10)||0));return String(m+1).padStart(3,'0')}
 function cread(){const o={};document.querySelectorAll('#cbody [data-cf2]').forEach(i=>{const v=i.value.trim();if(v)o[i.dataset.cf2]=v});if(o.iban)o.iban=o.iban.replace(/\s+/g,'').toUpperCase();if(o.idt==='ЕГН')delete o.idt;return o}
