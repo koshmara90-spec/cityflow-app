@@ -71,6 +71,86 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 .lk *{pointer-events:none}.lk{display:inline-flex;align-items:center;gap:7px;text-align:left}
 .pc{border:1px solid var(--bd);border-radius:10px;padding:2px 14px;background:var(--bg)}.pr{display:grid;grid-template-columns:130px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--bd)}.pr:first-child{border-top:0}.pr small{color:var(--mu)}.pr a{color:var(--ac)}
 [hidden]{display:none!important}.ic{padding:2px 8px}
+/* ===== Общ дизайн за трите теми (Тъмна, Светла, Топла): полупрозрачни заоблени карти, хапчета, движение.
+   Темите сменят само цветовете. Фонът е мек градиент на темата или твоя снимка (размазана). ===== */
+:root{--bg:rgba(255,255,255,.58);--side:rgba(255,255,255,.52);--card:rgba(255,255,255,.66);--bd:rgba(255,255,255,.82);--solid:#fff;--pb:#1b1c1f;--pt:#fff;--pill:#fff;
+  --sh:0 10px 30px -14px rgba(25,35,55,.22),inset 0 1px 0 rgba(255,255,255,.7);--gl:blur(16px) saturate(1.35);--tint:rgba(240,242,245,.42);--base:#eceff3;
+  --ground:radial-gradient(900px 620px at 8% 4%,#d6e9e2 0%,transparent 62%),radial-gradient(800px 620px at 92% 10%,#e3e9f3 0%,transparent 60%),radial-gradient(900px 700px at 70% 98%,#efe3d1 0%,transparent 58%),linear-gradient(180deg,#f1f3f6,#e7ebf0)}
+:root[data-theme="dark"]{--bg:rgba(0,0,0,.24);--side:rgba(26,26,30,.66);--card:rgba(40,40,46,.6);--bd:rgba(255,255,255,.08);--solid:#222226;--pb:#ececee;--pt:#121214;--pill:rgba(255,255,255,.12);
+  --sh:0 12px 32px -16px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);--tint:rgba(14,14,17,.58);--base:#121214;
+  --ground:radial-gradient(900px 620px at 6% 0%,rgba(63,195,160,.16) 0%,transparent 60%),radial-gradient(800px 600px at 96% 100%,rgba(230,178,77,.1) 0%,transparent 60%),radial-gradient(700px 500px at 80% 10%,rgba(80,120,170,.1) 0%,transparent 60%),linear-gradient(180deg,#141416,#0f0f11)}
+:root[data-theme="warm"]{--bg:rgba(255,255,255,.42);--side:rgba(255,255,255,.34);--card:rgba(255,255,255,.55);--tx:#1e1b18;--mu:#655b52;--bd:rgba(255,255,255,.62);--ac:#0d8a7a;--oa:#fff;--in:#127a52;--out:#bf4528;--wr:#9a6508;--wb:#0a7fb8;--wo:#fff;
+  --solid:#fbf6ef;--pb:#1e1b18;--pt:#fff;--pill:#fff;--sh:0 10px 30px -12px rgba(60,35,15,.28),inset 0 1px 0 rgba(255,255,255,.7);--tint:rgba(239,227,211,.32);--base:#e9dccb;color-scheme:light;
+  --ground:linear-gradient(115deg,transparent 0 38%,rgba(255,236,200,.55) 46%,transparent 58%),radial-gradient(900px 620px at 8% 4%,#f6d7b0 0%,transparent 62%),radial-gradient(760px 600px at 92% 12%,#c7d6c2 0%,transparent 60%),radial-gradient(900px 720px at 70% 96%,#e2ab7f 0%,transparent 58%),radial-gradient(700px 520px at 18% 88%,#b9a58e 0%,transparent 62%),linear-gradient(180deg,#efe3d3,#e3d2bd)}
+/* WOLT: синият вид остава, само с новата форма */
+:root.w:not([data-theme="dark"]){--bg:rgba(255,255,255,.5);--side:rgba(220,238,251,.6);--card:rgba(242,249,255,.68);--bd:rgba(255,255,255,.8);--tx:#0c2a47;--mu:#56748f;--wb:#0a78b8;--solid:#f2f9ff;--tint:rgba(219,238,251,.4);
+  --ground:radial-gradient(900px 620px at 8% 4%,#bfe3fb 0%,transparent 62%),radial-gradient(800px 600px at 92% 90%,#d6ecfb 0%,transparent 60%),linear-gradient(180deg,#e3f1fc,#d3e8f8)}
+:root[data-theme="dark"].w{--side:rgba(8,20,38,.7);--card:rgba(16,42,79,.62);--bd:rgba(120,170,230,.16);--solid:#102a4f;--tint:rgba(8,20,40,.6);
+  --ground:radial-gradient(900px 620px at 8% 0%,rgba(59,185,245,.2) 0%,transparent 60%),linear-gradient(180deg,#0b1d38,#08152a)}
+
+html{background:var(--base)}body{background:transparent}
+body::before,body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
+body::before{background:var(--ground)}
+:root[data-theme="warm"]:not(.ph) body::after{opacity:.1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .35 0 0 0 0 .25 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* твоята снимка: размазана, с лек слой в цвета на темата, за да се чете текстът */
+:root.ph body::before{background:var(--bgimg) center/cover no-repeat;filter:blur(var(--blur,18px));inset:calc(var(--blur,18px) * -2)}
+:root.ph body::after{background:var(--tint)}
+
+/* повърхности */
+:where(.card,.rc,.tile,nav,.calb,#dock){background:var(--card);border:1px solid var(--bd);box-shadow:var(--sh)}
+.card,.rc{border-radius:22px}.tile{border-radius:20px;border:1px solid var(--bd)}
+.card .card{box-shadow:none}
+/* размазване само там, където отдолу минава съдържание (менюто, лентата долу); картите са върху фона – там само тежи */
+:where(nav,#dock){-webkit-backdrop-filter:var(--gl);backdrop-filter:var(--gl)}
+nav{margin:12px 0 12px 12px;top:12px;height:calc(100vh / var(--z,1) - 24px);border-radius:26px;background:var(--side);border-right:1px solid var(--bd)}
+nav button{border-radius:999px;transition:background .2s,box-shadow .2s,color .2s}
+nav button:hover{background:var(--bg)}
+nav button.on{background:var(--pill);box-shadow:0 6px 16px -8px rgba(0,0,0,.35)}
+.top h1{font-size:32px;font-weight:500;letter-spacing:-.02em}h2.sec{font-weight:500;letter-spacing:-.01em}
+/* бутони като хапчета: главният е плътен (тъмен или бял според темата), другите – полупрозрачни */
+button{border-radius:999px}
+button.p{background:var(--pb);border-color:var(--pb);color:var(--pt)}
+:is(nav button,.tile,.lk,.calg button,.tabs button){border-color:transparent}
+:is(nav button,.lk,.calg button,.tabs button):not(.on):not(.s){background:none}
+.tile{background:var(--card)}
+:is(input,select){border-radius:12px}input[type=range]{accent-color:var(--ac)}
+:is(input,select):focus{outline:2px solid var(--ac);outline-offset:1px}
+.pcn button{background:var(--bg);border-color:var(--bd)}
+.pcn button.on{background:var(--pill);border-color:var(--ac);box-shadow:0 4px 12px -6px rgba(0,0,0,.3)}
+.tabs button.on{background:var(--pill);border-radius:999px}
+#toast{background:var(--pb);color:var(--pt);border-radius:999px;padding:10px 18px;box-shadow:0 10px 30px -10px rgba(0,0,0,.45)}
+.modal{background:rgba(10,8,6,.4)}
+.mbox{border-radius:24px}.mbox .card{background:var(--solid)}
+.calb{background:var(--solid);border-radius:20px}
+.calg button.s{background:var(--pb);color:var(--pt)}
+#ptab tr>:first-child{background:var(--solid)}
+:is(.vd,.vs){background:var(--bg);border-color:var(--bd);border-radius:14px}
+.tiles{grid-template-columns:repeat(auto-fit,minmax(128px,1fr))}
+/* браузъри без матово стъкло: плътно меню и лента, за да се чете */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){nav,#dock{background:var(--solid)}}
+
+/* движение: смяна на раздел, отваряне на прозорец, натискане */
+@keyframes gIn{from{opacity:0;transform:translateY(10px)}}
+@keyframes gPop{from{opacity:0;transform:translateY(8px) scale(.985)}}
+.view:not([hidden]){animation:gIn .32s cubic-bezier(.2,.75,.2,1)}
+.modal:not([hidden]) .mbox,.calw:not([hidden]) .calb{animation:gPop .24s cubic-bezier(.2,.75,.2,1)}
+button{transition:transform .12s ease,background .2s,box-shadow .2s}
+button:active{transform:scale(.96)}
+@media(hover:hover){.tile{transition:transform .2s ease,box-shadow .2s}.tile:hover{transform:translateY(-2px);box-shadow:0 16px 34px -14px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.3)}}
+
+/* телефон: плаваща лента с иконите долу; менюто ☰ остава за всичко останало */
+#dock{display:none}
+@media(max-width:900px){
+  nav{margin:0;top:0;height:auto;border-radius:0 26px 26px 0;background:var(--solid)}
+  #dock{display:flex;gap:2px;position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:calc(100% - 24px);padding:6px;border-radius:999px;overflow-x:auto;scrollbar-width:none}
+  #dock button{flex:none;width:42px;height:42px;display:grid;place-items:center;padding:0;border:0;background:none;color:var(--mu)}
+  #dock button.on{background:var(--pb);color:var(--pt)}
+  #dock svg{width:22px;height:22px}
+  main{padding-bottom:96px}
+  #toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  :root{--gl:blur(12px) saturate(1.3)}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body><div class="app">
 <nav><div class="brand">CityFlow LTD</div>
 <button data-v="dash" class="on"><i data-i="home"></i>Табло</button><button data-v="cour"><i data-i="bike"></i>Куриери</button><button data-v="perf"><i data-i="trend"></i>Представяне</button><button data-v="cand"><i data-i="user"></i>Нови кандидати</button><button data-v="inv"><i data-i="receipt"></i>Фактури и разходи</button><button data-v="hist"><i data-i="clock"></i>История</button><button data-v="week"><i data-i="chart"></i>Седмици</button><button data-v="lich"><i data-i="me"></i>Лично<span id="lbd" hidden style="margin-left:auto;background:var(--out);color:#fff;border-radius:9px;font-size:11px;padding:1px 7px;font-weight:600"></span></button><button data-v="set"><i data-i="sliders"></i>Настройки</button>
@@ -111,6 +191,7 @@ h2.sec{font-size:20px;font-weight:500;margin:0 0 12px}h2.sec small{color:var(--m
 <div class="card"><h2>Име</h2><label>Как да те поздравява таблото</label><input id="sme" maxlength="30" autocomplete="off" style="max-width:220px" placeholder="Твоето име"></div>
 <div class="card"><h2>Прагове за „Представяне“</h2><p style="margin:0 0 10px"><small>Кога куриер влиза в броячите и в списъка „За обаждане“. Промяната важи веднага.</small></p><div class="f" id="sth"></div><button id="sthr" style="margin-top:10px">Върни стойностите по подразбиране</button></div>
 <div class="card"><h2>Удръжка</h2><label>Стандартна удръжка на куриер за седмица (€)</label><input id="sded" type="number" step="0.01" min="0" style="max-width:160px"></div>
+<div class="card"><h2>Фон</h2><p style="margin:0 0 10px"><small>Сложи своя снимка зад всичко. Тя е размазана и леко покрита с цвета на темата, за да се чете текстът. Пази се само на това устройство.</small></p><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button id="bgu">📷 Качи снимка</button><button id="bgx" hidden>Махни снимката</button><input type="file" id="bgf" accept="image/*" hidden></div><div id="bgbW" hidden style="margin-top:12px;max-width:320px"><label for="bgb">Размазване: <b id="bgbv">18</b></label><input type="range" id="bgb" min="0" max="40" step="2" style="padding:0;border:0;background:none"></div></div>
 <div class="card"><h2>Размер на интерфейса</h2><small>Ако текстът е дребен или не е достатъчно ясен на твоя екран, увеличи го. Така всичко се прерисува по-гладко.</small><br><select id="zm" style="width:auto;margin-top:8px"><option value="0.9">90%</option><option value="1">100%</option><option value="1.1">110%</option><option value="1.25">125%</option><option value="1.5">150%</option><option value="1.75">175%</option></select></div></section></main>
 <aside><div class="card"><h2>⏳ За плащане</h2><div id="pend"></div></div><div class="card"><h2>✅ Последно платени</h2><div id="recent"></div></div></aside><div class="calw" id="cal" hidden><div class="calb"><div class="calh"><button data-c="-1" aria-label="Предишен месец">‹</button><b id="calt"></b><button data-c="1" aria-label="Следващ месец">›</button></div><div class="calg" id="calg"></div><div class="calf"><button data-c="today">Днес</button><button data-c="clear">Изчисти</button></div></div></div></div>
 <div class="modal" id="modal" hidden><div class="mbox"><div class="card"><div class="tabs"><button id="ft" class="on">Нов запис</button><button id="t2">Куриери за седмицата</button></div><div class="f" id="single">
@@ -340,13 +421,30 @@ function dash(inc,exp,res,open,od){
 function go(v){if(v==='lich')v=lsub;if(v==='wolt'||v==='veh')lsub=v;const nv=v===lsub?'lich':v;view=v;$('.app').classList.remove('m');$('#mb').innerHTML=ic(document.querySelector('nav [data-v="'+nv+'"] i').dataset.i);document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===nv));document.querySelectorAll('.ltab [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!=='v-'+v);$('#vt').textContent=v==='dash'?hi():T[v];$('.app').classList.toggle('w',v==='wolt');document.documentElement.classList.toggle('w',v==='wolt');$('#nw').hidden=v==='wolt'||v==='cand'||v==='veh';$('.app').classList.toggle('c',v==='cand'||v==='veh');$('#perw').hidden=!(v==='dash'||v==='cour');if(v==='set')accLoad();
   const sl=$('#s-'+v);if(sl)sl.appendChild($('#recs'));if(v==='set'){$('#sded').value=DED;$('#sme').value=wd0.me||'';sthFill()}tm=null;tp=0;render();scrollTo(0,0)}
 function openM(){$('#modal').hidden=false}function closeM(){$('#modal').hidden=true;$('#imodal').hidden=true;$('#smodal').hidden=true;$('#pmodal').hidden=true;$('#cmodal').hidden=true;$('#vmodal').hidden=true}
-function theme(t){document.documentElement.dataset.theme=t;ui.theme=t;saveUi();$('#theme').innerHTML=t==='dark'?'<i>'+ic('sun')+'</i>Светла тема':'<i>'+ic('moon')+'</i>Тъмна тема'}
+const THM=['dark','light','warm'],THN={dark:'Тъмна',light:'Светла',warm:'Топла'},thNext=t=>THM[(THM.indexOf(t)+1)%THM.length];
+function theme(t){if(!THM.includes(t))t='dark';document.documentElement.dataset.theme=t;ui.theme=t;saveUi();const n=thNext(t);$('#theme').innerHTML='<i>'+ic(n==='dark'?'moon':'sun')+'</i>Тема: '+THN[n]}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-v],[data-a]');if(!b)return;if(b.dataset.v)return go(b.dataset.v);const a=b.dataset.a;
   if(a==='new'){resetForm();tab(false);openM()}if(a==='week'){tab(true);openM()}if(a==='inv')go('inv');if(a==='binv')$('#ipdf').click();
   if(a==='imp'){tab(true);openM();toast('Избери „Платете на“ и натисни „Импорт от справка на Болт“')}});
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal'||e.target.id==='mx')closeM()});$('#cancel').addEventListener('click',closeM);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#cal').hidden)closeCal();else closeM()}});
-$('#theme').onclick=()=>theme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+$('#theme').onclick=()=>theme(thNext(document.documentElement.dataset.theme));
+{const d=document.createElement('div');d.id='dock';d.setAttribute('role','navigation');d.setAttribute('aria-label','Раздели');
+  const sync=()=>{d.innerHTML=[...document.querySelectorAll('nav > button[data-v]')].filter(b=>!b.hidden&&b.dataset.v!=='set').map(b=>`<button data-dv="${b.dataset.v}" class="${b.classList.contains('on')?'on':''}" aria-label="${esc(b.textContent.trim())}">${b.querySelector('i').innerHTML}</button>`).join('')};
+  d.addEventListener('click',e=>{const b=e.target.closest('[data-dv]');if(b)go(b.dataset.dv)});document.body.appendChild(d);sync();
+  new MutationObserver(sync).observe($('nav'),{subtree:true,childList:true,attributes:true,attributeFilter:['class','hidden']})}
+const BGK='cityflow.bg';let bgUrl='';
+function bgGet(){try{return JSON.parse(localStorage.getItem(BGK)||'null')}catch(e){return null}}
+async function bgApply(){const o=bgGet(),r=document.documentElement,on=!!(o&&o.img);if(bgUrl){URL.revokeObjectURL(bgUrl);bgUrl=''}
+  if(on){try{bgUrl=URL.createObjectURL(await (await fetch(o.img)).blob())}catch(e){bgUrl=''}r.style.setProperty('--bgimg','url("'+(bgUrl||o.img)+'")');r.style.setProperty('--blur',(o.blur??18)+'px')}else{r.style.removeProperty('--bgimg');r.style.removeProperty('--blur')}
+  r.classList.toggle('ph',on);$('#bgx').hidden=!on;$('#bgbW').hidden=!on;$('#bgb').value=o&&o.blur!=null?o.blur:18;$('#bgbv').textContent=$('#bgb').value}
+function bgRead(f){return new Promise((ok,bad)=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.8))};im.onerror=()=>{URL.revokeObjectURL(u);bad(new Error('img'))};im.src=u})}
+$('#bgu').onclick=()=>$('#bgf').click();
+$('#bgf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const img=await bgRead(f),o=bgGet()||{};localStorage.setItem(BGK,JSON.stringify({img,blur:o.blur??18}));await bgApply();toast('Фонът е сложен')}catch(err){toast('Не успях да запазя снимката – опитай с по-малка')}};
+$('#bgx').onclick=()=>{try{localStorage.removeItem(BGK)}catch(e){}bgApply();toast('Фонът е махнат')};
+$('#bgb').oninput=e=>{document.documentElement.style.setProperty('--blur',e.target.value+'px');$('#bgbv').textContent=e.target.value};
+$('#bgb').onchange=e=>{const o=bgGet();if(!o)return;o.blur=+e.target.value;try{localStorage.setItem(BGK,JSON.stringify(o))}catch(x){}};
+bgApply();
 function sthFill(){const t=TH();$('#sth').innerHTML=Object.entries(THL).map(([k,[l,a,b]])=>`<div><label>${l}</label><input type="number" data-th="${k}" min="${a}" max="${b}" step="1" value="${t[k]}" style="max-width:110px"></div>`).join('')}
 $('#sth').addEventListener('change',e=>{const i=e.target.closest('[data-th]');if(!i)return;const [,a,b]=THL[i.dataset.th],v=Math.round(+i.value);if(!isFinite(v)||v<a||v>b){toast('Между '+a+' и '+b);sthFill();return}
   const th={...(wd0.th||{}),[i.dataset.th]:v};Object.keys(th).forEach(k=>{if(th[k]===THD[k])delete th[k]});wd0={...wd0,th};save();render();toast('Запазено')});
